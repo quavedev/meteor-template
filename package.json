@@ -1,0 +1,47 @@
+{
+  "name": "meteor-template",
+  "private": true,
+  "scripts": {
+    "start": "meteor run",
+    "quave-eslint": "eslint . --fix",
+    "quave-prettier": "prettier --write \"**/*.js\"",
+    "quave-check": "npm run quave-eslint && npm run quave-prettier"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.15.4",
+    "autoprefixer": "^10.4.0",
+    "meteor-node-stubs": "^1.1.0",
+    "postcss": "^8.3.11",
+    "postcss-load-config": "^3.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "tailwindcss": "^2.2.19"
+  },
+  "meteor": {
+    "mainModule": {
+      "client": "client/main.js",
+      "server": "server/main.js"
+    }
+  },
+  "devDependencies": {
+    "@quave/eslint-config-quave": "^1.0.7"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@quave/quave"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "meteor npm test && lint-staged",
+      "post-commit": "git update-index --again"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
