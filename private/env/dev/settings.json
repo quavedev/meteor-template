@@ -1,0 +1,8 @@
+{
+  "packages": {
+    "quave:email-postmark": {
+      "apiToken": "YOUR_API_TOKEN",
+      "from": "YOUR_FROM_EMAIL@yourdomain.com"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="run" type="meteor-app-runner" factoryName="Meteor" programParameters="--exclude-archs web.browser.legacy,web.cordova --settings private/env/dev/settings.json">
+    <option name="exePath" value="/usr/local/bin/meteor" />
+    <option name="startBrowserSettings">
+      <browser url="http://localhost:3000" />
+    </option>
+    <meteor-runner-state>
+      <startBrowserSettings>
+        <browser url="http://localhost:3000" />
+      </startBrowserSettings>
+    </meteor-runner-state>
+    <method v="2" />
+  </configuration>
+</component>
