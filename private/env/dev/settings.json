@@ -1,4 +1,9 @@
 {
+  "public": {
+    "appInfo": {
+      "name": "Meteor Template by quave"
+    }
+  },
   "packages": {
     "quave:email-postmark": {
       "apiToken": "YOUR_API_TOKEN",

@@ -45,11 +45,18 @@ It's a template project ready for you to implement your business idea. It includ
 
 ### Replace our placeholders
 
+#### Inform your app info
+- Fill the fields inside the settings in `public.appInfo` to make sure your app works properly.
+
 #### Sending emails with Postmark
 - Sign up for a [Postmark account](https://postmarkapp.com/signup) 
   - replace the following property with your postmark API KEY in the settings: `YOUR_API_TOKEN`
 - Follow the steps to verify your domain in their website
   - replace the following property with your desired `from` for the emails in the settings: `YOUR_FROM_EMAIL@yourdomain.com`
+
+## Updating your project
+
+If you want to keep your project up-to-date with the changes made here, read our [CHANGELOG](CHANGELOG.md).
 
 ## Changes made to the initial Meteor React skeleton
 
