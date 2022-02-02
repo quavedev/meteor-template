@@ -1,8 +1,11 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  purge: ['./**/*.{js,jsx,ts,tsx}', './client/*.html'],
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    './app/**/*.{js,jsx,ts,tsx}',
+    './client/**/*.{js,jsx,ts,tsx}',
+    './client/*.html',
+  ],
   theme: {
     fontFamily: {
       display: ['Martel Sans', 'sans-serif'],
@@ -26,9 +29,6 @@ module.exports = {
         fuchsia: colors.amber,
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [],
 };
