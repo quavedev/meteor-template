@@ -2,7 +2,7 @@
   "name": "meteor-template",
   "private": true,
   "scripts": {
-    "start": "meteor run",
+    "start": "meteor --exclude-archs web.browser.legacy,web.cordova --settings private/env/dev/settings.json",
     "quave-eslint": "eslint . --fix",
     "quave-prettier": "prettier --write \"**/*.js\"",
     "quave-check": "npm run quave-eslint && npm run quave-prettier"
