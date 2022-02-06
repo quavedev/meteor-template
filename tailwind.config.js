@@ -1,34 +1,7 @@
-const colors = require('tailwindcss/colors');
-
 module.exports = {
   content: [
     './app/**/*.{js,jsx,ts,tsx}',
     './client/**/*.{js,jsx,ts,tsx}',
     './client/*.html',
   ],
-  theme: {
-    fontFamily: {
-      display: ['Martel Sans', 'sans-serif'],
-      body: ['Martel Sans', 'sans-serif'],
-    },
-    extend: {
-      spacing: {
-        128: '32rem',
-        112: '28rem',
-        96: '24rem',
-        80: '20rem',
-        7: '1.875rem',
-      },
-      fontSize: {
-        '4xs': '0.625rem',
-        '3xs': '0.6875rem',
-        '2xs': '0.75rem',
-        xs: '0.8125rem',
-      },
-      colors: {
-        fuchsia: colors.amber,
-      },
-    },
-  },
-  plugins: [],
 };
