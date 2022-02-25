@@ -27,7 +27,9 @@
     }
   },
   "devDependencies": {
-    "@quave/eslint-config-quave": "^1.0.7"
+    "@quave/eslint-config-quave": "^1.0.7",
+    "prettier": "^2.5.1",
+    "prettier-plugin-tailwindcss": "^0.1.8"
   },
   "eslintConfig": {
     "extends": [

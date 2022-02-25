@@ -22,7 +22,7 @@ export const Access = () => {
   if (loggedUser) {
     return (
       <div className="flex flex-col items-center">
-        <h3 className="text-lg px-3 py-2 text-base font-medium">
+        <h3 className="px-3 py-2 text-lg text-base font-medium">
           You are already authenticated.
         </h3>
         <button onClick={() => history.push(RoutePaths.HOME)} type="button">
@@ -32,11 +32,11 @@ export const Access = () => {
     );
   }
   return (
-    <div className="flex flex-col items-center flex-grow">
+    <div className="flex flex-grow flex-col items-center">
       <Passwordless onEnterToken={onEnterToken} />
       <a
         onClick={() => history.push(RoutePaths.HOME)}
-        className="mt-5 text-base font-medium text-indigo-700 hover:text-indigo-600 cursor-pointer"
+        className="mt-5 cursor-pointer text-base font-medium text-indigo-700 hover:text-indigo-600"
       >
         <span aria-hidden="true"> &rarr;</span> Back to Home
       </a>

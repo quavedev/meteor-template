@@ -19,7 +19,7 @@ export const Home = () => {
             onClick={() =>
               loggedUser ? Meteor.logout() : history.push(RoutePaths.ACCESS)
             }
-            className={`text-base font-medium text-indigo-700 hover:text-indigo-600 cursor-pointer ${
+            className={`cursor-pointer text-base font-medium text-indigo-700 hover:text-indigo-600 ${
               isLoadingLoggedUser ? 'invisible' : ''
             }`}
           >
@@ -34,7 +34,7 @@ export const Home = () => {
           <a
             target="_blank"
             href="https://www.quave.dev"
-            className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-medium text-white hover:bg-indigo-700"
           >
             Visit quave.dev
           </a>
