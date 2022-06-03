@@ -11,14 +11,14 @@
     "@babel/runtime": "^7.15.4",
     "@headlessui/react": "^1.4.3",
     "@heroicons/react": "^1.0.5",
-    "autoprefixer": "^10.4.2",
-    "meteor-node-stubs": "^1.2.1",
-    "postcss": "^8.4.5",
-    "postcss-load-config": "^3.1.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-router-dom": "^5.3.0",
-    "tailwindcss": "^3.0.23"
+    "autoprefixer": "^10.4.7",
+    "meteor-node-stubs": "^1.2.3",
+    "postcss": "^8.4.14",
+    "postcss-load-config": "^4.0.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-router-dom": "^6.3.0",
+    "tailwindcss": "^3.0.24"
   },
   "meteor": {
     "mainModule": {
@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "@quave/eslint-config-quave": "^1.0.7",
-    "prettier": "^2.5.1",
-    "prettier-plugin-tailwindcss": "^0.1.8"
+    "prettier": "^2.6.2",
+    "prettier-plugin-tailwindcss": "^0.1.11"
   },
   "eslintConfig": {
     "extends": [

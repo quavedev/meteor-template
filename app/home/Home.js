@@ -1,11 +1,11 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useLoggedUser } from 'meteor/quave:logged-user-react';
 import { RoutePaths } from '../general/RoutePaths';
 
 export const Home = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
 
   return (
@@ -17,7 +17,7 @@ export const Home = () => {
         <div>
           <a
             onClick={() =>
-              loggedUser ? Meteor.logout() : history.push(RoutePaths.ACCESS)
+              loggedUser ? Meteor.logout() : navigate(RoutePaths.ACCESS)
             }
             className={`cursor-pointer text-base font-medium text-indigo-700 hover:text-indigo-600 ${
               isLoadingLoggedUser ? 'invisible' : ''
