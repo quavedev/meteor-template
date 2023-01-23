@@ -10,7 +10,7 @@
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@headlessui/react": "^1.4.3",
-    "@heroicons/react": "^1.0.5",
+    "@heroicons/react": "^2.0.13",
     "autoprefixer": "^10.4.7",
     "meteor-node-stubs": "^1.2.3",
     "postcss": "^8.4.14",
