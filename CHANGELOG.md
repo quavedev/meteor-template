@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.4 (2023-02-27)
+
+- Upgrades Meteor version to 2.10.
+- Upgrades all dependencies to latest.
+- Includes conditional router rendering supporting:
+  - Pages for authenticated people only (LoggedLayout) 
+  - Pages for anonymous people only (AnonymousLayout) 
+  - Pages for all people (PublicLayout) 
+
 ## 0.0.3 (2022-01-28)
 
 - Upgrades Meteor version to 2.6-rc.1 from 2.5.5.
