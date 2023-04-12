@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.5 (2023-04-12)
+
+- Upgrades Meteor version to 2.11.0
+- Upgrades all dependencies to latest.
+- Adding Dockerfile to create container image to run app
+- Adding [zcloud.ws](zcloud.ws) instructions to deploy
+- Adding [Meteor up](https://meteor-up.com/) config example to running using [zcloud.ws](zcloud.ws) images
+
 ## 0.0.4 (2023-02-27)
 
 - Upgrades Meteor version to 2.10.
