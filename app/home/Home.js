@@ -3,10 +3,19 @@ import { Meteor } from 'meteor/meteor';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoggedUser } from 'meteor/quave:logged-user-react';
 import { RoutePaths } from '../general/RoutePaths';
+import { useSubscribe, useFind } from 'meteor/react-meteor-data';
+import { ClicksCollection } from '../clicks/ClicksCollection';
 
 export const Home = () => {
   const navigate = useNavigate();
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
+  useSubscribe('countData');
+
+  const documents = useFind(() => ClicksCollection.find(), []);
+
+  const onCount = () => {
+    Meteor.call('clicks.increment');
+  };
 
   return (
     <div className="flex w-full flex-col">
@@ -24,8 +33,24 @@ export const Home = () => {
           Visit quave.dev
         </a>
       </div>
+      <div className="mt-12 flex w-full flex-col items-center space-y-2">
+        <div className="text-lg font-bold text-indigo-700">Clicks</div>
+        <div className="text-3xl font-semibold">{documents[0]?.count || 0}</div>
+        <div>
+          <button
+            onClick={onCount}
+            className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-medium text-white hover:bg-indigo-700"
+          >
+            Click to increment
+          </button>
+        </div>
+        <div>
+          coming from MongoDB <span className="text-green-700">clicks</span>{' '}
+          collection
+        </div>
+      </div>
 
-      <div className="mt-2 flex flex-col space-y-2">
+      <div className="mt-12 flex flex-col space-y-2">
         {loggedUser && <Link to={RoutePaths.PRIVATE}>See private page</Link>}
         <a
           onClick={() =>
