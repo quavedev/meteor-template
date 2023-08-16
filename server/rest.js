@@ -31,7 +31,7 @@ const fibonacci = (num) => {
 
 app.get('/load-fibonacci', (req, res) => {
   res.set('Content-type', 'application/json');
-  const { num } = req.query;
+  const { num, timing } = req.query;
   if (!num) {
     res.status(400).send(
       JSON.stringify({
@@ -46,7 +46,14 @@ app.get('/load-fibonacci', (req, res) => {
   const fib = fibonacci(num);
   const message = `fibonacci ${num}=${fib}, ${new Date() - start}ms`;
   console.log(message);
-  res.status(200).send(JSON.stringify({ status: 'success', message }));
+
+  if (timing) {
+    res.status(200).send(JSON.stringify({ status: 'success', message }));
+    return;
+  }
+
+  res.set('Content-type', 'application/json');
+  res.status(200).send(JSON.stringify({ status: 'success' }));
 });
 
 WebApp.connectHandlers.use('/api/', app);
