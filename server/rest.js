@@ -1,10 +1,9 @@
 /* eslint-disable no-console */
 import express from 'express';
 import { registerMetrics } from './metrics.js';
+import { WebApp } from 'meteor/webapp';
 
 const app = express();
-
-const port = process.env.PORT || 3000;
 
 registerMetrics({
   app,
@@ -34,14 +33,12 @@ app.get('/load-fibonacci', (req, res) => {
   res.set('Content-type', 'application/json');
   const { num } = req.query;
   if (!num) {
-    res
-      .status(400)
-      .send(
-        JSON.stringify({
-          status: 'error',
-          message: 'num query param is required',
-        })
-      );
+    res.status(400).send(
+      JSON.stringify({
+        status: 'error',
+        message: 'num query param is required',
+      })
+    );
     return;
   }
   const start = new Date();
@@ -52,6 +49,4 @@ app.get('/load-fibonacci', (req, res) => {
   res.status(200).send(JSON.stringify({ status: 'success', message }));
 });
 
-app.listen(port, () => {
-  console.log(`Listen on :${port}`);
-});
+WebApp.connectHandlers.use('/api/', app);
