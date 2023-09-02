@@ -1,19 +1,10 @@
 /* eslint-disable no-console */
-import express from 'express';
 import { registerMetrics } from './metrics.js';
 import { WebApp } from 'meteor/webapp';
 
-const app = express();
-
 registerMetrics({
-  app,
   path: '/metrics',
   useAuth: process.env.USE_METRICS_AUTH,
-});
-
-app.get('/', (req, res) => {
-  res.set('Content-type', 'application/json');
-  res.status(200).send(JSON.stringify({ status: 'success' }));
 });
 
 let count = 0;
@@ -29,7 +20,7 @@ const fibonacci = (num) => {
   return fibonacci(num - 1) + fibonacci(num - 2);
 };
 
-app.get('/load-fibonacci', (req, res) => {
+WebApp.expressHandlers.get('/api/load-fibonacci', (req, res) => {
   res.set('Content-type', 'application/json');
   const { num, timing } = req.query;
   if (!num) {
@@ -56,4 +47,7 @@ app.get('/load-fibonacci', (req, res) => {
   res.status(200).send(JSON.stringify({ status: 'success' }));
 });
 
-WebApp.connectHandlers.use('/api/', app);
+WebApp.expressHandlers.get('/api', (req, res) => {
+  res.set('Content-type', 'application/json');
+  res.status(200).send(JSON.stringify({ status: 'success' }));
+});
