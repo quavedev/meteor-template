@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { collectDefaultMetrics, register } from 'prom-client';
+import { WebApp } from 'meteor/webapp';
 
 const authMetrics = (req, res, next) => {
   const authUser = process.env.AUTH_USER || 'user';
@@ -18,13 +19,13 @@ const authMetrics = (req, res, next) => {
   res.end('Authentication required.');
 };
 
-export const registerMetrics = ({ app, path, useAuth }) => {
+export const registerMetrics = ({ path, useAuth }) => {
   collectDefaultMetrics({ timeout: 5000 });
   console.log({ useAuth });
   if (useAuth) {
-    app.use(path, authMetrics);
+    WebApp.expressHandlers.get(path, authMetrics);
   }
-  app.use(path, (req, res) => {
+  WebApp.expressHandlers.get(path, (req, res) => {
     register.metrics().then((metrics) => {
       res.end(metrics);
     });
