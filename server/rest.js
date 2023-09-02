@@ -3,7 +3,7 @@ import { registerMetrics } from './metrics.js';
 import { WebApp } from 'meteor/webapp';
 
 registerMetrics({
-  path: '/metrics',
+  path: '/api/metrics',
   useAuth: process.env.USE_METRICS_AUTH,
 });
 
