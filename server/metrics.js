@@ -1,5 +1,9 @@
 /* eslint-disable no-console */
 import { collectDefaultMetrics, register } from 'prom-client';
+import { Meteor } from 'meteor/meteor';
+
+// eslint-disable-next-line no-undef
+const Fibers = Npm.require('fibers');
 
 const authMetrics = (req, res, next) => {
   const authUser = process.env.AUTH_USER || 'user';
@@ -24,9 +28,14 @@ export const registerMetrics = ({ app, path, useAuth }) => {
   if (useAuth) {
     app.use(path, authMetrics);
   }
-  app.use(path, (req, res) => {
-    register.metrics().then((metrics) => {
-      res.end(metrics);
-    });
-  });
+  app.use(
+    path,
+    Meteor.bindEnvironment((req, res) => {
+      const promClientMetrics = Promise.await(register.metrics());
+      const meteorMetrics = `# Fibers\n
+    nodejs_fibers_created ${Fibers.fibersCreated}\n
+    nodejs_fibers_pool_size ${Fibers.poolSize}\n`;
+      res.end(`${promClientMetrics}\n\n${meteorMetrics}`);
+    })
+  );
 };
