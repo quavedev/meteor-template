@@ -31,7 +31,7 @@ const fibonacci = (num) => {
 
 app.get('/load-fibonacci', (req, res) => {
   res.set('Content-type', 'application/json');
-  const { num, timing } = req.query;
+  const { num, timing, noFibers } = req.query;
   if (!num) {
     res.status(400).send(
       JSON.stringify({
@@ -43,7 +43,7 @@ app.get('/load-fibonacci', (req, res) => {
   }
   const start = new Date();
   console.log(`fibonacci ${num}`);
-  const fib = fibonacci(num);
+  const fib = noFibers ? fibonacci(num) : Promise.await(fibonacci(num));
   const message = `fibonacci ${num}=${fib}, ${new Date() - start}ms`;
   console.log(message);
 
