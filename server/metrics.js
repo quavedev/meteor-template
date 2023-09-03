@@ -32,9 +32,14 @@ export const registerMetrics = ({ app, path, useAuth }) => {
     path,
     Meteor.bindEnvironment((req, res) => {
       const promClientMetrics = Promise.await(register.metrics());
-      const meteorMetrics = `# Fibers\n
-    nodejs_fibers_created ${Fibers.fibersCreated}\n
-    nodejs_fibers_pool_size ${Fibers.poolSize}\n`;
+      const meteorMetrics = `
+# HELP nodejs_fibers_created Fibers created
+# TYPE nodejs_fibers_created gauge
+nodejs_fibers_created ${Fibers.fibersCreated}
+
+# HELP nodejs_fibers_created Fibers pool size
+# TYPE nodejs_fibers_created counter
+nodejs_fibers_pool_size ${Fibers.poolSize}`;
       res.end(`${promClientMetrics}\n\n${meteorMetrics}`);
     })
   );
