@@ -37,8 +37,8 @@ export const registerMetrics = ({ app, path, useAuth }) => {
 # TYPE nodejs_fibers_created gauge
 nodejs_fibers_created ${Fibers.fibersCreated}
 
-# HELP nodejs_fibers_created Fibers pool size
-# TYPE nodejs_fibers_created counter
+# HELP nodejs_fibers_pool_size Fibers pool size
+# TYPE nodejs_fibers_pool_size counter
 nodejs_fibers_pool_size ${Fibers.poolSize}`;
       res.end(`${promClientMetrics}\n\n${meteorMetrics}`);
     })
