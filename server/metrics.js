@@ -25,9 +25,8 @@ export const registerMetrics = ({ path, useAuth }) => {
   if (useAuth) {
     WebApp.expressHandlers.get(path, authMetrics);
   }
-  WebApp.expressHandlers.get(path, (req, res) => {
-    register.metrics().then((metrics) => {
-      res.end(metrics);
-    });
+  WebApp.expressHandlers.get(path, async (req, res) => {
+    const promClientMetrics = await register.metrics();
+    res.end(promClientMetrics);
   });
 };
