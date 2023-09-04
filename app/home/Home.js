@@ -22,7 +22,11 @@ export const Home = () => {
       <div className="flex w-full flex-col items-center justify-between gap-2 text-center lg:flex-row lg:text-left">
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 md:text-4xl">
           <span className="block">
-            Ready to use Meteor {window.__meteor_runtime_config__.meteorRelease}
+            Ready to use Meteor{' '}
+            {window.__meteor_runtime_config__.meteorRelease.replace(
+              'METEOR@',
+              ''
+            )}
             ?
           </span>
           <span className="block text-indigo-600">Template by quave</span>
