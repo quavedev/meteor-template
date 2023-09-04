@@ -3,16 +3,15 @@ import { Meteor } from 'meteor/meteor';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoggedUser } from 'meteor/quave:logged-user-react';
 import { RoutePaths } from '../general/RoutePaths';
-import { useSubscribe } from 'meteor/react-meteor-data';
-// import { ClicksCollection } from '../clicks/ClicksCollection';
+import { useSubscribe, useFind } from 'meteor/react-meteor-data';
+import { ClicksCollection } from '../clicks/ClicksCollection';
 
 export const Home = () => {
   const navigate = useNavigate();
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
   useSubscribe('countData');
 
-  // const documents = useFind(() => ClicksCollection.find(), []);
-  const documents = [];
+  const documents = useFind(() => ClicksCollection.find(), []);
 
   const onCount = () => {
     Meteor.call('clicks.increment');

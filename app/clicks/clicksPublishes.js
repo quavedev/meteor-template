@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-// import { ClicksCollection } from './ClicksCollection';
+import { ClicksCollection } from './ClicksCollection';
 
 Meteor.publish('countData', function publishClicks() {
-  // return ClicksCollection.find();
+  return ClicksCollection.find();
 });
