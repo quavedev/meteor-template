@@ -23,9 +23,9 @@ export const registerMetrics = ({ path, useAuth }) => {
   collectDefaultMetrics({ timeout: 5000 });
   console.log({ useAuth });
   if (useAuth) {
-    WebApp.expressHandlers.get(path, authMetrics);
+    WebApp.handlers.get(path, authMetrics);
   }
-  WebApp.expressHandlers.get(path, async (req, res) => {
+  WebApp.handlers.get(path, async (req, res) => {
     const promClientMetrics = await register.metrics();
     res.end(promClientMetrics);
   });

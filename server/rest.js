@@ -21,7 +21,7 @@ const fibonacci = (num) => {
   return fibonacci(num - 1) + fibonacci(num - 2);
 };
 
-WebApp.expressHandlers.get('/api/load-fibonacci', (req, res) => {
+WebApp.handlers.get('/api/load-fibonacci', (req, res) => {
   res.set('Content-type', 'application/json');
   const { num, timing } = req.query;
   if (!num) {
@@ -48,7 +48,7 @@ WebApp.expressHandlers.get('/api/load-fibonacci', (req, res) => {
   res.status(200).send(JSON.stringify({ status: 'success' }));
 });
 
-WebApp.expressHandlers.get('/api/load-data', async (req, res) => {
+WebApp.handlers.get('/api/load-data', async (req, res) => {
   res.set('Content-type', 'application/json');
   const { num, timing } = req.query;
   if (!num) {
@@ -85,7 +85,7 @@ WebApp.expressHandlers.get('/api/load-data', async (req, res) => {
   res.status(200).send(JSON.stringify({ status: 'success' }));
 });
 
-WebApp.expressHandlers.get('/api', (req, res) => {
+WebApp.handlers.get('/api', (req, res) => {
   res.set('Content-type', 'application/json');
   res.status(200).send(JSON.stringify({ status: 'success' }));
 });
