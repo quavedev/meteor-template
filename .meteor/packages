@@ -4,20 +4,20 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-base@2.0.0-alpha300.11             # Packages every Meteor app needs to have
-mobile-experience@2.0.0-alpha300.11       # Packages for a great mobile UX
-mongo@2.0.0-alpha300.11                   # The database Meteor supports right now
-reactive-var@2.0.0-alpha300.11            # Reactive variable for tracker
+meteor-base@1.5.2-alpha300.15             # Packages every Meteor app needs to have
+mobile-experience@1.1.1-alpha300.15       # Packages for a great mobile UX
+mongo@2.0.0-alpha300.15                   # The database Meteor supports right now
+reactive-var@1.0.13-alpha300.15            # Reactive variable for tracker
 
-standard-minifier-css@2.0.0-alpha300.11
-standard-minifier-js@3.0.0-alpha300.11    # JS minifier run for production mode
-es5-shim@5.0.0-alpha300.11                # ECMAScript 5 compatibility for older browsers
-ecmascript@1.0.0-alpha300.11              # Enable ECMAScript2015+ syntax in app code
-typescript@5.0.0-alpha300.11              # Enable TypeScript syntax in .ts and .tsx modules
-shell-server@1.0.0-alpha300.11            # Server-side component of the `meteor shell` command
-hot-module-replacement@1.0.0-alpha300.11  # Update client in development without reloading the page
+standard-minifier-css@1.9.3-alpha300.15
+standard-minifier-js@3.0.0-alpha300.15    # JS minifier run for production mode
+es5-shim@4.8.1-alpha300.15                # ECMAScript 5 compatibility for older browsers
+ecmascript@0.16.8-alpha300.15              # Enable ECMAScript2015+ syntax in app code
+typescript@4.9.5-alpha300.15              # Enable TypeScript syntax in .ts and .tsx modules
+shell-server@0.6.0-alpha300.15            # Server-side component of the `meteor shell` command
+hot-module-replacement@0.5.4-alpha300.15  # Update client in development without reloading the page
 
-static-html@2.0.0-alpha300.11             # Define static page content in .html files
+static-html@1.3.3-alpha300.15             # Define static page content in .html files
 react-meteor-data       # React higher-order component for reactively tracking Meteor data
 
 quave:accounts-passwordless-react
