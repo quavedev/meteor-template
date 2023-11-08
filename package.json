@@ -35,7 +35,10 @@
   "eslintConfig": {
     "extends": [
       "@quave/quave"
-    ]
+    ],
+    "rules": {
+      "meteor/no-sync-user": "error"
+    }
   },
   "husky": {
     "hooks": {

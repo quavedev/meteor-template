@@ -7,7 +7,7 @@ module.exports = {
       // pem: './path/to/pem'
       // password: 'server-password'
       // or neither for authenticate from ssh-agent
-    }
+    },
   },
 
   app: {
@@ -37,14 +37,14 @@ module.exports = {
 
     // Show progress bar while uploading bundle to server
     // You might need to disable it on CI servers
-    enableUploadProgressBar: true
+    enableUploadProgressBar: true,
   },
 
   mongo: {
     version: '4.4.12',
     servers: {
-      one: {}
-    }
+      one: {},
+    },
   },
 
   // (Optional)
