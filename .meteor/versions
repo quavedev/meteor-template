@@ -60,8 +60,9 @@ promise@1.0.0-alpha300.17
 quave:accounts-passwordless-react@2.1.0
 quave:alert-react-tailwind@3.1.0
 quave:logged-user-react@1.1.0
+quave:migrations@2.0.0
 quave:settings@1.1.0
-quave:synced-cron@2.0.0
+quave:synced-cron@2.0.2
 random@1.2.2-alpha300.17
 rate-limit@1.1.2-alpha300.17
 react-fast-refresh@0.2.8-alpha300.17
