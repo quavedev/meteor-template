@@ -23,3 +23,4 @@ react-meteor-data       # React higher-order component for reactively tracking M
 quave:accounts-passwordless-react
 quave:logged-user-react
 quave:alert-react-tailwind
+quave:synced-cron
