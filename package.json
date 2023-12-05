@@ -30,7 +30,7 @@
     }
   },
   "devDependencies": {
-    "@quave/eslint-config-quave": "^2.0.0-rc.2"
+    "@quave/eslint-config-quave": "^2.0.0-rc.3"
   },
   "eslintConfig": {
     "extends": [
