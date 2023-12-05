@@ -7,6 +7,7 @@ SyncedCron.config({
 });
 
 Meteor.startup(() => {
+  const a = 1;
   SyncedCron.add({
     name: 'I run every 5 seconds',
     schedule: (parser) => parser.text('every 5 seconds'),
