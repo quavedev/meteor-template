@@ -8,7 +8,7 @@ import { ErrorFallback } from '../components/ErrorFallback';
 import { PageWithHeader } from './PageWithHeader';
 import { PageWithoutHeader } from './PageWithoutHeader';
 
-const InnerLayout = ({ children, onlyLogged, onlyAnonymous }) => {
+function InnerLayout({ children, onlyLogged, onlyAnonymous }) {
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
 
   if (isLoadingLoggedUser) {
@@ -35,10 +35,12 @@ const InnerLayout = ({ children, onlyLogged, onlyAnonymous }) => {
   }
 
   return <PageWithoutHeader>{children}</PageWithoutHeader>;
-};
+}
 
-export const ConditionalLayout = ({ ...props }) => (
-  <ErrorBoundary FallbackComponent={ErrorFallback}>
-    <InnerLayout {...props} />
-  </ErrorBoundary>
-);
+export function ConditionalLayout({ ...props }) {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <InnerLayout {...props} />
+    </ErrorBoundary>
+  );
+}

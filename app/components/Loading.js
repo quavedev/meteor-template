@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Loading = ({ name }) => {
+export function Loading({ name }) {
   if (name) {
     // eslint-disable-next-line no-console
     console.log('Loading', name);
@@ -13,4 +13,4 @@ export const Loading = ({ name }) => {
       </div>
     </div>
   );
-};
+}

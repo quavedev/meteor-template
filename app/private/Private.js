@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RoutePaths } from '../general/RoutePaths';
 
-export const Private = () => {
+export function Private() {
   const navigate = useNavigate();
 
   const goHome = () => {
@@ -25,4 +25,4 @@ export const Private = () => {
       </h2>
     </div>
   );
-};
+}

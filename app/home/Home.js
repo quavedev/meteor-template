@@ -6,7 +6,7 @@ import { RoutePaths } from '../general/RoutePaths';
 import { useSubscribe, useFind } from 'meteor/react-meteor-data';
 import { ClicksCollection } from '../clicks/ClicksCollection';
 
-export const Home = () => {
+export function Home() {
   const navigate = useNavigate();
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
   useSubscribe('countData');
@@ -73,4 +73,4 @@ export const Home = () => {
       </div>
     </div>
   );
-};
+}

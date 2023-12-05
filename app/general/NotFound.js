@@ -2,7 +2,7 @@ import React from 'react';
 import { RoutePaths } from './RoutePaths';
 import { useNavigate } from 'react-router-dom';
 
-export const NotFound = () => {
+export function NotFound() {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center">
@@ -14,4 +14,4 @@ export const NotFound = () => {
       </button>
     </div>
   );
-};
+}

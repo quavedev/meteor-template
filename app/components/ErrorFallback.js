@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { RoutePaths } from '../general/RoutePaths';
 import React from 'react';
 
-export const ErrorFallback = ({ error, resetErrorBoundary }) => {
+export function ErrorFallback({ error, resetErrorBoundary }) {
   const navigate = useNavigate();
 
   return (
@@ -31,4 +31,4 @@ export const ErrorFallback = ({ error, resetErrorBoundary }) => {
       </div>
     </div>
   );
-};
+}
