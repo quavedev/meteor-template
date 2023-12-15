@@ -4,6 +4,8 @@
   "scripts": {
     "start": "meteor --exclude-archs web.browser.legacy,web.cordova --settings private/env/dev/settings.json",
     "quave-eslint": "eslint . --fix",
+    "quave-eslint-meteor3-d": "METEOR_ESLINT_PLUGIN_DEBUG=1 eslint .",
+    "quave-eslint-meteor3": "eslint .",
     "quave-prettier": "prettier --write \"**/*.js\"",
     "quave-check": "npm run quave-eslint && npm run quave-prettier",
     "test": "exit 0"
@@ -12,6 +14,7 @@
     "@babel/runtime": "^7.21.0",
     "@headlessui/react": "^1.7.12",
     "@heroicons/react": "^2.0.16",
+    "@types/meteor": "^2.9.7",
     "autoprefixer": "^10.4.13",
     "meteor-node-stubs": "^1.2.5",
     "postcss": "^8.4.21",
@@ -35,7 +38,12 @@
   "eslintConfig": {
     "extends": [
       "@quave/quave"
-    ]
+    ],
+    "rules": {
+      "meteor/no-sync-mongo-methods-on-server": 2,
+      "meteor/no-fibers-future-usage": 2,
+      "meteor/no-promise-fibers-usage": 2
+    }
   },
   "husky": {
     "hooks": {
