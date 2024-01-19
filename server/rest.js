@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { registerMetrics } from './metrics.js';
+import { registerMetrics } from './metrics';
 import { WebApp } from 'meteor/webapp';
 import { ClicksCollection } from '../app/clicks/ClicksCollection';
 

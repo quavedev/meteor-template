@@ -33,16 +33,14 @@
     }
   },
   "devDependencies": {
-    "@quave/eslint-config-quave": "^2.0.0"
+    "@quave/eslint-config-quave": "^2.5.0"
   },
   "eslintConfig": {
     "extends": [
       "@quave/quave"
     ],
     "rules": {
-      "meteor/no-sync-mongo-methods-on-server": 2,
-      "meteor/no-fibers-future-usage": 2,
-      "meteor/no-promise-fibers-usage": 2
+      "react/jsx-filename-extension": "off"
     }
   },
   "husky": {
