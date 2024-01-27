@@ -17,7 +17,7 @@
     "@types/meteor": "^2.9.7",
     "autoprefixer": "^10.4.13",
     "meteor-node-stubs": "^1.2.5",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.33",
     "postcss-load-config": "^4.0.1",
     "prom-client": "^14.2.0",
     "react": "^18.2.0",
@@ -33,7 +33,7 @@
     }
   },
   "devDependencies": {
-    "@quave/eslint-config-quave": "^2.5.0"
+    "@quave/eslint-config-quave": "^2.5.1"
   },
   "eslintConfig": {
     "extends": [
