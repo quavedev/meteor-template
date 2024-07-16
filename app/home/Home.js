@@ -48,7 +48,7 @@ export function Home() {
             onClick={onCount}
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-medium text-white hover:bg-indigo-700"
           >
-            Click to increment
+            Click to increment now
           </button>
         </div>
         <div>

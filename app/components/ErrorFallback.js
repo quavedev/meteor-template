@@ -16,7 +16,7 @@ export function ErrorFallback({ error, resetErrorBoundary }) {
           <button onClick={resetErrorBoundary}>Try again</button>
         </div>
       )}
-      <div className="mt-16 mb-4 flex w-full flex-col items-center justify-center space-y-16">
+      <div className="mb-4 mt-16 flex w-full flex-col items-center justify-center space-y-16">
         <div>
           <a
             onClick={() => {
