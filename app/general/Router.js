@@ -10,39 +10,41 @@ import { PublicLayout } from '../layouts/PublicLayout';
 import { AnonymousLayout } from '../layouts/AnonymousLayout';
 import { LoggedLayout } from '../layouts/LoggedLayout';
 
-export const Router = () => (
-  <Routes>
-    <Route
-      path={RoutePaths.HOME}
-      element={
-        <PublicLayout>
-          <Home />
-        </PublicLayout>
-      }
-    />
-    <Route
-      path={RoutePaths.ACCESS}
-      element={
-        <AnonymousLayout>
-          <Access />
-        </AnonymousLayout>
-      }
-    />
-    <Route
-      path={RoutePaths.PRIVATE}
-      element={
-        <LoggedLayout>
-          <Private />
-        </LoggedLayout>
-      }
-    />
-    <Route
-      path="*"
-      element={
-        <PublicLayout>
-          <NotFound />
-        </PublicLayout>
-      }
-    />
-  </Routes>
-);
+export function Router() {
+  return (
+    <Routes>
+      <Route
+        path={RoutePaths.HOME}
+        element={
+          <PublicLayout>
+            <Home />
+          </PublicLayout>
+        }
+      />
+      <Route
+        path={RoutePaths.ACCESS}
+        element={
+          <AnonymousLayout>
+            <Access />
+          </AnonymousLayout>
+        }
+      />
+      <Route
+        path={RoutePaths.PRIVATE}
+        element={
+          <LoggedLayout>
+            <Private />
+          </LoggedLayout>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <PublicLayout>
+            <NotFound />
+          </PublicLayout>
+        }
+      />
+    </Routes>
+  );
+}

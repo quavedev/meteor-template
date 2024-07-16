@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ClicksCollection } from './ClicksCollection';
 
 Meteor.methods({
-  'clicks.increment': function incrementCount() {
-    ClicksCollection.upsert({}, { $inc: { count: 1 } });
+  'clicks.increment': async function incrementCount() {
+    await ClicksCollection.upsertAsync({}, { $inc: { count: 1 } });
   },
 });

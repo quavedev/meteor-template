@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConditionalLayout } from './ConditionalLayout';
 
-export const AnonymousLayout = ({ children }) => (
-  <ConditionalLayout onlyAnonymous>{children}</ConditionalLayout>
-);
+export function AnonymousLayout({ children }) {
+  return <ConditionalLayout onlyAnonymous>{children}</ConditionalLayout>;
+}

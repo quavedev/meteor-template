@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const PageWithHeader = ({ children }) => (
-  <div className="flex h-full flex-col">{children}</div>
-);
+export function PageWithHeader({ children }) {
+  return <div className="flex h-full flex-col">{children}</div>;
+}

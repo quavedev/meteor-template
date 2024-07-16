@@ -5,7 +5,7 @@ import { useAlert } from 'meteor/quave:alert-react-tailwind';
 
 import { RoutePaths } from '../general/RoutePaths';
 
-export const Access = () => {
+export function Access() {
   const { openAlert } = useAlert();
   const navigate = useNavigate();
 
@@ -28,4 +28,4 @@ export const Access = () => {
       </a>
     </div>
   );
-};
+}

@@ -1,3 +1,3 @@
-import { createCollection } from 'meteor/quave:collections';
+import { Mongo } from 'meteor/mongo';
 
-export const ClicksCollection = createCollection({ name: 'clicks' });
+export const ClicksCollection = new Mongo.Collection('clicks');
