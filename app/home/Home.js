@@ -5,8 +5,10 @@ import { useLoggedUser } from 'meteor/quave:logged-user-react';
 import { RoutePaths } from '../general/RoutePaths';
 import { useSubscribe, useFind } from 'meteor/react-meteor-data';
 import { ClicksCollection } from '../clicks/ClicksCollection';
+import { useAlert } from 'meteor/quave:alert-react-tailwind';
 
 export function Home() {
+  const { openAlert } = useAlert();
   const navigate = useNavigate();
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
   useSubscribe('countData');
@@ -15,6 +17,7 @@ export function Home() {
 
   const onCount = () => {
     Meteor.call('clicks.increment');
+    openAlert('Incremented!');
   };
 
   return (

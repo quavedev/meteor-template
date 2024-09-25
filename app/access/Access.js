@@ -1,17 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Passwordless } from 'meteor/quave:accounts-passwordless-react';
-import { useAlert } from 'meteor/quave:alert-react-tailwind';
 
 import { RoutePaths } from '../general/RoutePaths';
 
 export function Access() {
-  const { openAlert } = useAlert();
   const navigate = useNavigate();
 
   const onEnterToken = () => {
     navigate(RoutePaths.PRIVATE);
-    openAlert('Welcome!');
   };
 
   return (

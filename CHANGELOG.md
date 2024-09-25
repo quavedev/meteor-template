@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.6 (2024-09-25)
+
+- Upgrades to React 19 RC
+- Upgrades to Meteor 3.0.3
+- Removes dependencies from `@headlessui/react` and `@heroicons/react`
+
 ## 0.0.5 (2023-04-12)
 
 - Upgrades Meteor version to 2.11.0

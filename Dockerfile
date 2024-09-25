@@ -1,4 +1,4 @@
-FROM zcloudws/meteor-build:3.0-alpha.19 as builder
+FROM zcloudws/meteor-build:3.0.3 as builder
 
 WORKDIR /build/source
 USER root
@@ -12,10 +12,11 @@ ENV METEOR_DISABLE_OPTIMISTIC_CACHING=1
 
 RUN meteor npm --no-audit install && meteor build --platforms web.browser,web.cordova --directory ../app-build
 
-FROM zcloudws/meteor-node-mongodb-runtime:3.0-alpha.19-with-tools
+FROM zcloudws/meteor-node-mongodb-runtime:3.0.3-with-tools
+
 COPY --from=builder /build/app-build/bundle /home/zcloud/app
 
-RUN cd /home/zcloud/app/programs/server && chmod +rw npm-shrinkwrap.json && npm --no-audit install
+RUN cd /home/zcloud/app/programs/server && npm --no-audit install
 
 WORKDIR /home/zcloud/app
 

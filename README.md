@@ -22,8 +22,6 @@ It's a template project ready for you to implement your business idea. It includ
 
 ### Npm packages for TailwindCSS:
 - tailwindcss
-- @headlessui/react
-- @heroicons/react
 
 ### Meteor packages for React:
 - [react-meteor-data](https://github.com/meteor/react-packages/tree/master/packages/react-meteor-data)
