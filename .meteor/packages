@@ -25,3 +25,4 @@ quave:logged-user-react
 quave:alert-react-tailwind
 quave:synced-cron
 quave:migrations
+quave:email-postmark

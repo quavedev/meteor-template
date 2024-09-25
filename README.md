@@ -55,26 +55,3 @@ It's a template project ready for you to implement your business idea. It includ
 ## Updating your project
 
 If you want to keep your project up-to-date with the changes made here, read our [CHANGELOG](CHANGELOG.md).
-
-## Changes made to the initial Meteor React skeleton
-
-- added Meteor packages listed above as dependencies
-- added NPM packages listed above as dependencies
-- configured eslint
-- configured prettier
-- configured eslint rules according to quave's recommendations
-- removed npm scripts besides start
-- added npm script `quave-eslint`
-- added npm script `quave-prettier`
-- added npm script `quave-check`
-- configured husky
-- renamed `.jsx` files to `.js`
-- configured tailwindcss
-- removed test folder
-- removed imports folder
-- configured WebStorm runner to exclude unused architectures: `meteor --exclude-archs web.browser.legacy,web.cordova`
-- reorganized App.js file to be inside `app/general` directory
-- used Router provider in App.js to allow React Router
-- used AlertProvider in App.js to allow `quave:alert-react-tailwind`
-- created sample Home page
-- created sample Access page

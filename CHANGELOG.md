@@ -4,6 +4,7 @@
 
 - Upgrades to React 19 RC
 - Upgrades to Meteor 3.0.3
+  - Updates Dockerfile to run in zCloud with Meteor 3.0.3 
 - Removes dependencies from `@headlessui/react` and `@heroicons/react`
 
 ## 0.0.5 (2023-04-12)
@@ -11,8 +12,8 @@
 - Upgrades Meteor version to 2.11.0
 - Upgrades all dependencies to latest.
 - Adding Dockerfile to create container image to run app
-- Adding [zcloud.ws](zcloud.ws) instructions to deploy
-- Adding [Meteor up](https://meteor-up.com/) config example to running using [zcloud.ws](zcloud.ws) images
+- Adding [zcloud.ws](https://zcloud.ws) instructions to deploy
+- Adding [Meteor up](https://meteor-up.com/) config example to running using [zcloud.ws](https://zcloud.ws) images
 
 ## 0.0.4 (2023-02-27)
 
