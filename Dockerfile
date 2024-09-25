@@ -10,13 +10,15 @@ COPY --chown=zcloud:zcloud . /build/source
 
 ENV METEOR_DISABLE_OPTIMISTIC_CACHING=1
 
-RUN meteor npm --no-audit install && meteor build --platforms web.browser,web.cordova --directory ../app-build
+#  --legacy-peer-deps because of react-error-boundary
+RUN meteor npm i --no-audit --legacy-peer-deps && meteor build --platforms web.browser,web.cordova --directory ../app-build
 
 FROM zcloudws/meteor-node-mongodb-runtime:3.0.3-with-tools
 
 COPY --from=builder /build/app-build/bundle /home/zcloud/app
 
-RUN cd /home/zcloud/app/programs/server && npm --no-audit install
+#  --legacy-peer-deps because of react-error-boundary
+RUN cd /home/zcloud/app/programs/server && npm i  --no-audit --legacy-peer-deps
 
 WORKDIR /home/zcloud/app
 
