@@ -1,0 +1,14 @@
+name: Docs Deploy
+on:
+  push:
+    branches: ['main']
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        uses: zcloud-ws/zcloud-deploy-action@main
+        with:
+          env-token: ${{ secrets.ZCLOUD_ENV_TOKEN }}
+          env: "quave-meteor-template"
