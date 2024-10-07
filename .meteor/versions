@@ -59,6 +59,7 @@ ordered-dict@1.2.0
 promise@1.0.0
 quave:accounts-passwordless-react@2.1.0
 quave:alert-react-tailwind@4.0.0
+quave:collections@3.0.0
 quave:email-postmark@1.3.0
 quave:logged-user-react@1.1.0
 quave:migrations@2.0.2

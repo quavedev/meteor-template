@@ -1,3 +1,14 @@
-import { Mongo } from 'meteor/mongo';
+import { createCollection } from 'meteor/quave:collections';
+import SimpleSchema from 'simpl-schema';
 
-export const ClicksCollection = new Mongo.Collection('clicks');
+const ClickSchema = new SimpleSchema({
+  count: {
+    type: SimpleSchema.Integer,
+    defaultValue: 0,
+  },
+});
+
+export const ClicksCollection = createCollection({
+  name: 'clicks',
+  schema: ClickSchema,
+});
