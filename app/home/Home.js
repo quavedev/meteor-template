@@ -42,6 +42,7 @@ export function Home() {
     }
   };
 
+  const clickDocument = documents[0];
   return (
     <div>
       <div className="flex w-full flex-col items-center justify-between gap-2 text-center lg:flex-row lg:text-left">
@@ -61,8 +62,13 @@ export function Home() {
         <div className="mt-12 flex w-full flex-col items-center space-y-2">
           <div className="text-lg font-bold text-indigo-700">Clicks</div>
           <div className="text-3xl font-semibold">
-            {documents[0]?.count || 0}
+            {clickDocument?.getCountText() || 'No clicks yet'}
           </div>
+          {clickDocument && (
+            <div className="text-sm italic text-gray-500">
+              (I'm using a collection helper)
+            </div>
+          )}
           <div className="flex flex-col gap-4">
             <Button onClick={onCount}>Click to increment now</Button>
             {loggedUser && (

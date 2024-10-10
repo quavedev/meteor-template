@@ -27,3 +27,4 @@ quave:synced-cron
 quave:migrations
 quave:email-postmark
 quave:collections
+zodern:types

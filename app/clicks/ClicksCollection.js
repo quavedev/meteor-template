@@ -11,4 +11,9 @@ const ClickSchema = new SimpleSchema({
 export const ClicksCollection = createCollection({
   name: 'clicks',
   schema: ClickSchema,
+  helpers: {
+    getCountText() {
+      return `${this.count}x`;
+    },
+  },
 });
