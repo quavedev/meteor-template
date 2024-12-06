@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Meteor } from 'meteor/meteor';
 import { RoutePaths } from '../general/RoutePaths';
 import React from 'react';
