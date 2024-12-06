@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLoggedUser } from 'meteor/quave:logged-user-react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 import { RoutePaths } from '../general/RoutePaths';
 import { Loading } from '../components/Loading';

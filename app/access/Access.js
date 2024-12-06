@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Passwordless } from 'meteor/quave:accounts-passwordless-react';
 
 import { RoutePaths } from '../general/RoutePaths';

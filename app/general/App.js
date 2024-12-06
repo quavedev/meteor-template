@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { Router } from './Router';
 import { AlertProvider, Alert } from 'meteor/quave:alert-react-tailwind';
 import { Loading } from '../components/Loading';
