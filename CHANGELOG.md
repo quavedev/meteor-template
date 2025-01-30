@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.7 (2025-01-30)
+
+- Upgrades to Tailwind CSS 4.0.0
+
 ## 0.0.6 (2024-09-25)
 
 - Upgrades to React 19 RC
