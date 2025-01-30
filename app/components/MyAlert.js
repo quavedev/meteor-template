@@ -22,7 +22,7 @@ export const MyAlert = ({ message, isOpen, clear, autoCloseIn = 3_000 }) => {
           <button
             onClick={clear}
             aria-label="Clear message"
-            className="ml-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+            className="focus:outline-hidden ml-4 text-gray-500 hover:text-gray-700"
           >
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
               <path
