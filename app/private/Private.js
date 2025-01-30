@@ -11,7 +11,7 @@ export function Private() {
   };
 
   return (
-    <div className="flex flex-grow flex-col items-center">
+    <div className="flex grow flex-col items-center">
       <h2 className="mt-48 text-3xl font-extrabold tracking-tight text-gray-900 md:text-4xl">
         <span className="block">You are in the private page</span>
         <div>
