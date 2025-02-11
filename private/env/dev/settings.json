@@ -7,7 +7,7 @@
   "packages": {
     "quave:email-postmark": {
       "from": "media@codeftw.dev",
-      "apiToken": "039052a5-a5fd-42f4-9888-c31707a5522c"
+      "apiToken": "abc"
     }
   }
 }
