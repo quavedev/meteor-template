@@ -33,11 +33,23 @@ It's a template project ready for you to implement your business idea. It includ
 - [quave:accounts-passwordless-react](https://github.com/quavedev/accounts-passwordless-react)
 - quave:alert-react-tailwind
 
+### Meteor pacakges for Migrations:
+- [quave:migrations](https://github.com/quavedev/meteor-packages/tree/main/migrations)
+
+### Meteor pacakges for Synced Cron:
+- [quave:synced-cron](https://github.com/quavedev/meteor-packages/tree/main/synced-cron)
 ### Meteor packages for Email:
 - [quave:email-postmark](https://github.com/quavedev/email-postmark)
   
 ### Meteor packages for Alerts:
 - quave:logged-user-react
+
+### Other packages from Quave that are not included in the template yet:
+
+#### Meteor pacakges for File Uploads to AWS, CloudFlare and OCI:
+
+- [quave:slingshot](https://github.com/quavedev/meteor-packages/tree/main/meteor-slingshot)
+
 
 ## Set up your project
 
