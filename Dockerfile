@@ -1,4 +1,4 @@
-FROM zcloudws/meteor-build:3.1.2 as builder
+FROM zcloudws/meteor-build:3.3 as builder
 
 WORKDIR /build/source
 USER root
@@ -13,7 +13,7 @@ ENV METEOR_DISABLE_OPTIMISTIC_CACHING=1
 #  --legacy-peer-deps because of react-error-boundary
 RUN meteor npm i --no-audit --legacy-peer-deps && meteor build --platforms web.browser,web.cordova --directory ../app-build
 
-FROM zcloudws/meteor-node-mongodb-runtime:3.1.2-with-tools
+FROM zcloudws/meteor-node-mongodb-runtime:3.3-with-tools
 
 COPY --from=builder /build/app-build/bundle /home/zcloud/app
 
