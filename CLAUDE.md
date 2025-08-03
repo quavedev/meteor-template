@@ -59,12 +59,15 @@ app/
 - **User-centric**: Design with user experience as priority
 
 ## Development Workflow
+
+> Always prefix npm commands with meteor
+> 
 ```bash
 # Start development
-npm start
+meteor npm start
 
 # Code quality (run before every commit)
-npm run quave-check
+meteor npm run quave-check
 
 # Package management
 meteor npm install [package]  # Always prefix with meteor
