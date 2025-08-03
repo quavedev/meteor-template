@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.8 (2025-08-03)
+
+- Upgrades Meteor to 3.3
+- Upgrades npm dependencies
+- Adds Claude Code files (CLAUDE.md and agents md)
+
 ## 0.0.7 (2025-01-30)
 
 - Upgrades to Tailwind CSS 4.0.0
