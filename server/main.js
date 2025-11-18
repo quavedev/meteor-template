@@ -6,6 +6,7 @@ import '../app/infra/cron';
 
 import '../app/clicks/clicksMethods';
 import '../app/clicks/clicksPublishes';
+import '../app/server/serverStatusMethods';
 
 import './rest';
 

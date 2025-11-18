@@ -2,6 +2,7 @@
 import { registerMetrics } from './metrics';
 import { WebApp } from 'meteor/webapp';
 import { ClicksCollection } from '../app/clicks/ClicksCollection';
+import { getServerHealth } from './health';
 
 registerMetrics({
   path: '/api/metrics',
@@ -88,4 +89,43 @@ WebApp.handlers.get('/api/load-data', async (req, res) => {
 WebApp.handlers.get('/api', (req, res) => {
   res.set('Content-type', 'application/json');
   res.status(200).send(JSON.stringify({ status: 'success' }));
+});
+
+WebApp.handlers.get('/api/check-reconnection', (req, res) => {
+  res.set('Content-type', 'application/json');
+
+  const health = getServerHealth();
+
+  if (health.needsReconnection) {
+    res.clearCookie('__zcloud_sticky_sess', {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    console.log(
+      `[Health] Server ${health.hostname} is overloaded (${health.memory.heapUsagePercentage}% heap usage). Clearing sticky session cookie.`
+    );
+
+    res.status(200).send(
+      JSON.stringify({
+        status: 'overloaded',
+        needsReconnection: true,
+        hostname: health.hostname,
+        memory: health.memory,
+        message:
+          'Server is overloaded. Sticky session cleared for load redistribution.',
+      })
+    );
+    return;
+  }
+
+  res.status(200).send(
+    JSON.stringify({
+      status: 'healthy',
+      needsReconnection: false,
+      hostname: health.hostname,
+      memory: health.memory,
+    })
+  );
 });

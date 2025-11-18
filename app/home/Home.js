@@ -7,6 +7,7 @@ import { useSubscribe, useFind } from 'meteor/react-meteor-data';
 import { ClicksCollection } from '../clicks/ClicksCollection';
 import { useAlert } from 'meteor/quave:alert-react-tailwind';
 import { Button } from '../components/Button';
+import { ServerStatus } from '../components/ServerStatus';
 
 export function Home() {
   const { openAlert } = useAlert();
@@ -118,6 +119,9 @@ export function Home() {
           >
             quave.dev
           </a>
+          <div className="mt-4 flex justify-center">
+            <ServerStatus />
+          </div>
         </div>
       </footer>
     </div>
