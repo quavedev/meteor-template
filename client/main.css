@@ -1,1 +1,6 @@
 @import 'tailwindcss';
+
+/* Base styles - set default text color for light theme */
+html, body, #app {
+  @apply min-h-screen bg-white text-gray-900;
+}
