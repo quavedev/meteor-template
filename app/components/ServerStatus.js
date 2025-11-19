@@ -232,7 +232,7 @@ export function ServerStatus() {
           <span className="text-gray-400">Auto cleanup</span>
         </label>
 
-        {!autoCleanup && stickyCookie && (
+        {!autoCleanup && (
           <button
             type="button"
             onClick={handleManualClear}
