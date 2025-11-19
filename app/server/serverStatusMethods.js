@@ -17,6 +17,7 @@ Meteor.methods({
         arrayBuffers: health.memory.arrayBuffers,
         heapUsagePercentage: health.memory.heapUsagePercentage,
       },
+      hostMemory: health.hostMemory,
       threshold: health.threshold,
       leakStatus: health.leakStatus,
     };

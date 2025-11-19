@@ -19,8 +19,16 @@ export function getServerHealth() {
   const { external } = memoryUsage;
   const { arrayBuffers } = memoryUsage;
 
+  // Host machine memory
+  const totalSystemMemory = os.totalmem();
+  const freeSystemMemory = os.freemem();
+  const usedSystemMemory = totalSystemMemory - freeSystemMemory;
+
   // Calculate percentage based on heap_size_limit (max available heap)
   const heapUsagePercentage = (heapUsed / heapSizeLimit) * 100;
+  const rssPercentageOfSystem = (rss / totalSystemMemory) * 100;
+  const systemMemoryUsagePercentage =
+    (usedSystemMemory / totalSystemMemory) * 100;
 
   const isOverloaded = heapUsagePercentage > RAM_THRESHOLD_PERCENTAGE;
   const hostname = process.env.HOSTNAME || os.hostname();
@@ -37,6 +45,13 @@ export function getServerHealth() {
       external,
       arrayBuffers,
       heapUsagePercentage: Math.round(heapUsagePercentage * 100) / 100,
+    },
+    hostMemory: {
+      total: totalSystemMemory,
+      free: freeSystemMemory,
+      used: usedSystemMemory,
+      usagePercentage: Math.round(systemMemoryUsagePercentage * 100) / 100,
+      rssPercentageOfSystem: Math.round(rssPercentageOfSystem * 100) / 100,
     },
     threshold: RAM_THRESHOLD_PERCENTAGE,
     leakStatus: {

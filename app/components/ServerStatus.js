@@ -203,7 +203,7 @@ export function ServerStatus() {
     serverInfo.status === 'healthy' ? 'text-green-500' : 'text-red-500';
   const statusIcon = serverInfo.status === 'healthy' ? '●' : '⚠';
 
-  const { memory } = serverInfo;
+  const { memory, hostMemory } = serverInfo;
 
   return (
     <div className="flex flex-col items-center gap-1 text-xs text-gray-500">
@@ -212,7 +212,7 @@ export function ServerStatus() {
         <span className="font-medium">{serverInfo.hostname}</span>
       </div>
 
-      {/* Memory Info */}
+      {/* Node.js Memory Info */}
       <div className="flex flex-wrap items-center justify-center gap-2">
         <span>
           Heap: {formatBytes(memory.heapUsed)} /{' '}
@@ -224,12 +224,27 @@ export function ServerStatus() {
         <span>RSS: {formatBytes(memory.rss)}</span>
       </div>
 
-      {/* Additional Memory Details */}
+      {/* Additional Node.js Memory Details */}
       <div className="flex flex-wrap items-center justify-center gap-2 text-gray-600">
         <span>External: {formatBytes(memory.external)}</span>
         <span className="text-gray-400">|</span>
         <span>ArrayBuffers: {formatBytes(memory.arrayBuffers)}</span>
       </div>
+
+      {/* Host Machine Memory */}
+      {hostMemory && (
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-2 text-gray-600">
+          <span className="text-gray-400">Host:</span>
+          <span>
+            {formatBytes(hostMemory.used)} / {formatBytes(hostMemory.total)} (
+            {hostMemory.usagePercentage}%)
+          </span>
+          <span className="text-gray-400">|</span>
+          <span>Free: {formatBytes(hostMemory.free)}</span>
+          <span className="text-gray-400">|</span>
+          <span>RSS/Host: {hostMemory.rssPercentageOfSystem}%</span>
+        </div>
+      )}
 
       {/* Memory Leak Status */}
       <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
