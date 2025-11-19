@@ -97,14 +97,8 @@ WebApp.handlers.get('/api/check-reconnection', (req, res) => {
   const health = getServerHealth();
 
   if (health.needsReconnection) {
-    res.clearCookie('__zcloud_sticky_sess', {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    });
-
     console.log(
-      `[Health] Server ${health.hostname} is overloaded (${health.memory.heapUsagePercentage}% heap usage). Clearing sticky session cookie.`
+      `[Health] Server ${health.hostname} is overloaded (${health.memory.heapUsagePercentage}% heap usage). Signaling client to clear sticky session.`
     );
 
     res.status(200).send(
@@ -114,7 +108,7 @@ WebApp.handlers.get('/api/check-reconnection', (req, res) => {
         hostname: health.hostname,
         memory: health.memory,
         message:
-          'Server is overloaded. Sticky session cleared for load redistribution.',
+          'Server is overloaded. Client should clear sticky session for load redistribution.',
       })
     );
     return;
