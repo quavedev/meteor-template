@@ -66,6 +66,8 @@ export function shouldClearStickySession() {
   return health.isOverloaded;
 }
 
+const LEAK_CHUNK_SIZE_MB = 50;
+
 export function startMemoryLeak() {
   if (leakIntervalId !== null) {
     console.log('[MemoryLeak] Already leaking memory');
@@ -76,15 +78,24 @@ export function startMemoryLeak() {
   }
 
   console.log(
-    '[MemoryLeak] Starting controlled memory leak (adding ~10MB every 5 seconds)'
+    `[MemoryLeak] Starting controlled memory leak (adding ~${LEAK_CHUNK_SIZE_MB}MB to heap every 5 seconds)`
   );
 
   leakIntervalId = setInterval(() => {
-    // Allocate approximately 10MB of data
-    const chunk = Buffer.alloc(10 * 1024 * 1024, 'x');
+    // Allocate heap memory using arrays of objects (not Buffers which go to external memory)
+    // Each object with a string takes heap space
+    const chunk = [];
+    const itemsPerChunk = LEAK_CHUNK_SIZE_MB * 1024; // ~1KB per item
+    for (let i = 0; i < itemsPerChunk; i++) {
+      chunk.push({
+        data: 'x'.repeat(1024), // 1KB string per object
+        index: i,
+        timestamp: Date.now(),
+      });
+    }
     leakedMemory.push(chunk);
     console.log(
-      `[MemoryLeak] Added chunk ${leakedMemory.length}, total leaked: ~${leakedMemory.length * 10}MB`
+      `[MemoryLeak] Added chunk ${leakedMemory.length}, total leaked: ~${leakedMemory.length * LEAK_CHUNK_SIZE_MB}MB`
     );
   }, 5000);
 
@@ -100,7 +111,7 @@ export function stopMemoryLeak() {
   clearInterval(leakIntervalId);
   leakIntervalId = null;
   console.log(
-    `[MemoryLeak] Stopped memory leak. ${leakedMemory.length} chunks retained (~${leakedMemory.length * 10}MB)`
+    `[MemoryLeak] Stopped memory leak. ${leakedMemory.length} chunks retained (~${leakedMemory.length * LEAK_CHUNK_SIZE_MB}MB)`
   );
 
   return {
@@ -112,7 +123,7 @@ export function stopMemoryLeak() {
 
 export function cleanupMemoryLeak() {
   const chunksCleared = leakedMemory.length;
-  const mbCleared = chunksCleared * 10;
+  const mbCleared = chunksCleared * LEAK_CHUNK_SIZE_MB;
 
   // Stop leak if running
   if (leakIntervalId !== null) {

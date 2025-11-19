@@ -267,7 +267,7 @@ export function ServerStatus() {
             <span className="text-gray-400">|</span>
             <span>
               <span className="text-gray-400">Leaked:</span> ~
-              {leakStatus.leakedChunks * 10}MB ({leakStatus.leakedChunks}{' '}
+              {leakStatus.leakedChunks * 50}MB ({leakStatus.leakedChunks}{' '}
               chunks)
             </span>
           </>
