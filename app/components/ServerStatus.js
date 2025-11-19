@@ -30,11 +30,19 @@ export function ServerStatus() {
   const [lastReconnectionStatus, setLastReconnectionStatus] = useState(null);
   const [lastCheckedAt, setLastCheckedAt] = useState(null);
   const [isClearing, setIsClearing] = useState(false);
+  const [leakStatus, setLeakStatus] = useState({
+    isLeaking: false,
+    leakedChunks: 0,
+  });
+  const [isLeakActionPending, setIsLeakActionPending] = useState(false);
 
   const fetchServerStatus = useCallback(async () => {
     try {
       const status = await Meteor.callAsync('server.getStatus');
       setServerInfo(status);
+      if (status.leakStatus) {
+        setLeakStatus(status.leakStatus);
+      }
       setError(null);
     } catch (err) {
       setError(err.reason || 'Failed to fetch server status');
@@ -130,6 +138,55 @@ export function ServerStatus() {
     await clearStickySession();
   }, [clearStickySession]);
 
+  const handleStartLeak = useCallback(async () => {
+    try {
+      setIsLeakActionPending(true);
+      console.log('[MemoryLeak] Starting memory leak');
+      const response = await fetch('/api/memory-leak/start', {
+        method: 'POST',
+      });
+      const data = await response.json();
+      console.log('[MemoryLeak] Start response:', data);
+      await fetchServerStatus();
+    } catch (err) {
+      console.error('[MemoryLeak] Error starting leak:', err);
+    } finally {
+      setIsLeakActionPending(false);
+    }
+  }, [fetchServerStatus]);
+
+  const handleStopLeak = useCallback(async () => {
+    try {
+      setIsLeakActionPending(true);
+      console.log('[MemoryLeak] Stopping memory leak');
+      const response = await fetch('/api/memory-leak/stop', { method: 'POST' });
+      const data = await response.json();
+      console.log('[MemoryLeak] Stop response:', data);
+      await fetchServerStatus();
+    } catch (err) {
+      console.error('[MemoryLeak] Error stopping leak:', err);
+    } finally {
+      setIsLeakActionPending(false);
+    }
+  }, [fetchServerStatus]);
+
+  const handleCleanupLeak = useCallback(async () => {
+    try {
+      setIsLeakActionPending(true);
+      console.log('[MemoryLeak] Cleaning up memory leak');
+      const response = await fetch('/api/memory-leak/cleanup', {
+        method: 'POST',
+      });
+      const data = await response.json();
+      console.log('[MemoryLeak] Cleanup response:', data);
+      await fetchServerStatus();
+    } catch (err) {
+      console.error('[MemoryLeak] Error cleaning up leak:', err);
+    } finally {
+      setIsLeakActionPending(false);
+    }
+  }, [fetchServerStatus]);
+
   if (isLoading) {
     return <div className="text-xs text-gray-400">Loading server info...</div>;
   }
@@ -154,19 +211,78 @@ export function ServerStatus() {
         <span className={statusColor}>{statusIcon}</span>
         <span className="font-medium">{serverInfo.hostname}</span>
       </div>
+
+      {/* Memory Info */}
       <div className="flex flex-wrap items-center justify-center gap-2">
         <span>
-          Heap: {formatBytes(memory.heapUsed)} / {formatBytes(memory.heapTotal)}{' '}
-          ({memory.heapUsagePercentage}%)
+          Heap: {formatBytes(memory.heapUsed)} /{' '}
+          {formatBytes(memory.heapSizeLimit)} ({memory.heapUsagePercentage}%)
         </span>
         <span className="text-gray-400">|</span>
-        <span>RSS: {formatBytes(memory.rss)}</span>
+        <span>Allocated: {formatBytes(memory.heapTotal)}</span>
         <span className="text-gray-400">|</span>
-        <span>System: {formatBytes(memory.totalSystem)}</span>
+        <span>RSS: {formatBytes(memory.rss)}</span>
+      </div>
+
+      {/* Additional Memory Details */}
+      <div className="flex flex-wrap items-center justify-center gap-2 text-gray-600">
+        <span>External: {formatBytes(memory.external)}</span>
+        <span className="text-gray-400">|</span>
+        <span>ArrayBuffers: {formatBytes(memory.arrayBuffers)}</span>
+      </div>
+
+      {/* Memory Leak Status */}
+      <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+        <span>
+          <span className="text-gray-400">Leak Status:</span>{' '}
+          <span
+            className={leakStatus.isLeaking ? 'text-red-500' : 'text-green-500'}
+          >
+            {leakStatus.isLeaking ? 'LEAKING' : 'Idle'}
+          </span>
+        </span>
+        {leakStatus.leakedChunks > 0 && (
+          <>
+            <span className="text-gray-400">|</span>
+            <span>
+              <span className="text-gray-400">Leaked:</span> ~
+              {leakStatus.leakedChunks * 10}MB ({leakStatus.leakedChunks}{' '}
+              chunks)
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* Memory Leak Controls */}
+      <div className="mt-2 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={handleStartLeak}
+          disabled={isLeakActionPending || leakStatus.isLeaking}
+          className="rounded bg-red-600 px-2 py-0.5 text-white hover:bg-red-700 disabled:opacity-50"
+        >
+          Start Leak
+        </button>
+        <button
+          type="button"
+          onClick={handleStopLeak}
+          disabled={isLeakActionPending || !leakStatus.isLeaking}
+          className="rounded bg-yellow-600 px-2 py-0.5 text-white hover:bg-yellow-700 disabled:opacity-50"
+        >
+          Stop Leak
+        </button>
+        <button
+          type="button"
+          onClick={handleCleanupLeak}
+          disabled={isLeakActionPending || leakStatus.leakedChunks === 0}
+          className="rounded bg-green-600 px-2 py-0.5 text-white hover:bg-green-700 disabled:opacity-50"
+        >
+          Cleanup
+        </button>
       </div>
 
       {/* Sticky Session Info */}
-      <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
         <span>
           <span className="text-gray-400">Sticky Session:</span>{' '}
           {stickyCookie || <span className="text-gray-600">none</span>}
@@ -220,7 +336,7 @@ export function ServerStatus() {
         </span>
       </div>
 
-      {/* Controls */}
+      {/* Auto Cleanup Controls */}
       <div className="mt-2 flex items-center gap-3">
         <label className="flex cursor-pointer items-center gap-1">
           <input

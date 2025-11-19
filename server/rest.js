@@ -2,7 +2,12 @@
 import { registerMetrics } from './metrics';
 import { WebApp } from 'meteor/webapp';
 import { ClicksCollection } from '../app/clicks/ClicksCollection';
-import { getServerHealth } from './health';
+import {
+  getServerHealth,
+  startMemoryLeak,
+  stopMemoryLeak,
+  cleanupMemoryLeak,
+} from './health';
 
 registerMetrics({
   path: '/api/metrics',
@@ -217,4 +222,23 @@ WebApp.handlers.post('/api/clear-sticky-session', (req, res) => {
       })
     );
   }
+});
+
+// Memory leak control endpoints
+WebApp.handlers.post('/api/memory-leak/start', (req, res) => {
+  res.set('Content-type', 'application/json');
+  const result = startMemoryLeak();
+  res.status(200).send(JSON.stringify(result));
+});
+
+WebApp.handlers.post('/api/memory-leak/stop', (req, res) => {
+  res.set('Content-type', 'application/json');
+  const result = stopMemoryLeak();
+  res.status(200).send(JSON.stringify(result));
+});
+
+WebApp.handlers.post('/api/memory-leak/cleanup', (req, res) => {
+  res.set('Content-type', 'application/json');
+  const result = cleanupMemoryLeak();
+  res.status(200).send(JSON.stringify(result));
 });

@@ -11,12 +11,14 @@ Meteor.methods({
       memory: {
         heapUsed: health.memory.heapUsed,
         heapTotal: health.memory.heapTotal,
+        heapSizeLimit: health.memory.heapSizeLimit,
         rss: health.memory.rss,
-        totalSystem: health.memory.totalSystem,
+        external: health.memory.external,
+        arrayBuffers: health.memory.arrayBuffers,
         heapUsagePercentage: health.memory.heapUsagePercentage,
-        rssPercentageOfSystem: health.memory.rssPercentageOfSystem,
       },
       threshold: health.threshold,
+      leakStatus: health.leakStatus,
     };
   },
 });
