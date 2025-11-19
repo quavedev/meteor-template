@@ -1,10 +1,22 @@
 # Changelog
 
+## 0.0.9 (2025-11-19)
+
+- Adds Rspack bundler support with React Compiler integration
+- Adds server health monitoring with real-time status component
+- Adds memory metrics using V8 heap statistics for accurate Node.js memory tracking
+- Adds controlled memory leak simulation for testing (start/stop/cleanup)
+- Adds sticky session management for load balancer scenarios
+- Adds Prometheus metrics endpoint (`/api/metrics`)
+- Adds Monti APM agent for performance monitoring
+- Enables modern browser target in package.json
+- Updates Docker base images to Meteor 3.3
+
 ## 0.0.8 (2025-08-03)
 
 - Upgrades Meteor to 3.3
 - Upgrades npm dependencies
-- Adds Claude Code files (CLAUDE.md and agents md)
+- Adds Claude Code files (CLAUDE.md and specialized agents)
 
 ## 0.0.7 (2025-01-30)
 
@@ -22,8 +34,7 @@
 - Upgrades Meteor version to 2.11.0
 - Upgrades all dependencies to latest.
 - Adding Dockerfile to create container image to run app
-- Adding [zcloud.ws](https://zcloud.ws) instructions to deploy
-- Adding [Meteor up](https://meteor-up.com/) config example to running using [zcloud.ws](https://zcloud.ws) images
+- Adding [qauve.cloud](https://quave.cloud) instructions to deploy
 
 ## 0.0.4 (2023-02-27)
 
