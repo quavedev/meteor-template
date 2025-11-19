@@ -119,7 +119,10 @@ function parseCookies(cookieHeader) {
 WebApp.handlers.get('/api/check-reconnection', (req, res) => {
   res.set('Content-type', 'application/json');
 
-  const health = getServerHealth();
+  // Get threshold from query param, default to 50
+  const threshold = parseInt(req.query.threshold, 10) || 50;
+
+  const health = getServerHealth({ threshold });
   const cookies = parseCookies(req.headers.cookie);
   const stickySession = cookies[STICKY_SESSION_COOKIE] || null;
   const previousStickySession = cookies[STICKY_SESSION_PREVIOUS_COOKIE] || null;
@@ -187,11 +190,38 @@ WebApp.handlers.post('/api/clear-sticky-session', (req, res) => {
 
   const cookies = parseCookies(req.headers.cookie);
   const currentStickySession = cookies[STICKY_SESSION_COOKIE] || null;
+  const previousStickySession = cookies[STICKY_SESSION_PREVIOUS_COOKIE] || null;
+  const health = getServerHealth();
+
+  console.log('=== [StickySession] CLEAR COOKIE REQUEST RECEIVED ===');
+  console.log('[StickySession] Timestamp:', new Date().toISOString());
+  console.log('[StickySession] Server hostname:', health.hostname);
+  console.log(
+    '[StickySession] Current __zcloud_sticky_sess:',
+    currentStickySession
+  );
+  console.log(
+    '[StickySession] Previous __zcloud_sticky_sess_previous:',
+    previousStickySession
+  );
+  console.log('[StickySession] Current memory state:');
+  console.log('[StickySession]   Heap used:', health.memory.heapUsed);
+  console.log('[StickySession]   Heap limit:', health.memory.heapSizeLimit);
+  console.log(
+    '[StickySession]   Heap usage %:',
+    health.memory.heapUsagePercentage
+  );
+  console.log('[StickySession]   RSS:', health.memory.rss);
 
   if (currentStickySession) {
     console.log(
-      `[Health] Clearing sticky session cookie. Previous value: ${currentStickySession}`
+      '[StickySession] ACTION: Clearing current cookie and saving to previous'
     );
+    console.log(
+      '[StickySession] Saving value to __zcloud_sticky_sess_previous:',
+      currentStickySession
+    );
+    console.log('[StickySession] Clearing __zcloud_sticky_sess cookie');
 
     // Set previous cookie with the current value
     res.cookie(STICKY_SESSION_PREVIOUS_COOKIE, currentStickySession, {
@@ -202,6 +232,9 @@ WebApp.handlers.post('/api/clear-sticky-session', (req, res) => {
     // Clear the current sticky session cookie
     res.clearCookie(STICKY_SESSION_COOKIE, { path: '/' });
 
+    console.log('[StickySession] Cookie operations completed');
+    console.log('=== [StickySession] CLEAR COOKIE SUCCESS ===');
+
     res.status(200).send(
       JSON.stringify({
         status: 'success',
@@ -211,13 +244,15 @@ WebApp.handlers.post('/api/clear-sticky-session', (req, res) => {
       })
     );
   } else {
-    console.log('[Health] No sticky session cookie to clear');
+    console.log('[StickySession] ACTION: No cookie to clear');
+    console.log('[StickySession] __zcloud_sticky_sess was already null/empty');
+    console.log('=== [StickySession] CLEAR COOKIE - NO ACTION NEEDED ===');
 
     res.status(200).send(
       JSON.stringify({
         status: 'success',
         message: 'No sticky session cookie to clear',
-        previousStickySession: cookies[STICKY_SESSION_PREVIOUS_COOKIE] || null,
+        previousStickySession,
         stickySession: null,
       })
     );
@@ -227,7 +262,9 @@ WebApp.handlers.post('/api/clear-sticky-session', (req, res) => {
 // Memory leak control endpoints
 WebApp.handlers.post('/api/memory-leak/start', (req, res) => {
   res.set('Content-type', 'application/json');
-  const result = startMemoryLeak();
+  // Get chunk size from query param, default to 50
+  const chunkSize = parseInt(req.query.chunkSize, 10) || 50;
+  const result = startMemoryLeak({ chunkSize });
   res.status(200).send(JSON.stringify(result));
 });
 

@@ -2,13 +2,16 @@
 import os from 'os';
 import v8 from 'v8';
 
-const RAM_THRESHOLD_PERCENTAGE = 50;
+const DEFAULT_THRESHOLD_PERCENTAGE = 50;
 
 // Memory leak simulation storage
 let leakedMemory = [];
 let leakIntervalId = null;
+let currentChunkSize = 50;
 
-export function getServerHealth() {
+export function getServerHealth({
+  threshold = DEFAULT_THRESHOLD_PERCENTAGE,
+} = {}) {
   const memoryUsage = process.memoryUsage();
   const heapStats = v8.getHeapStatistics();
 
@@ -30,7 +33,7 @@ export function getServerHealth() {
   const systemMemoryUsagePercentage =
     (usedSystemMemory / totalSystemMemory) * 100;
 
-  const isOverloaded = heapUsagePercentage > RAM_THRESHOLD_PERCENTAGE;
+  const isOverloaded = heapUsagePercentage > threshold;
   const hostname = process.env.HOSTNAME || os.hostname();
 
   return {
@@ -53,10 +56,11 @@ export function getServerHealth() {
       usagePercentage: Math.round(systemMemoryUsagePercentage * 100) / 100,
       rssPercentageOfSystem: Math.round(rssPercentageOfSystem * 100) / 100,
     },
-    threshold: RAM_THRESHOLD_PERCENTAGE,
+    threshold,
     leakStatus: {
       isLeaking: leakIntervalId !== null,
       leakedChunks: leakedMemory.length,
+      chunkSize: currentChunkSize,
     },
   };
 }
@@ -66,9 +70,7 @@ export function shouldClearStickySession() {
   return health.isOverloaded;
 }
 
-const LEAK_CHUNK_SIZE_MB = 50;
-
-export function startMemoryLeak() {
+export function startMemoryLeak({ chunkSize = 50 } = {}) {
   if (leakIntervalId !== null) {
     console.log('[MemoryLeak] Already leaking memory');
     return {
@@ -77,15 +79,17 @@ export function startMemoryLeak() {
     };
   }
 
+  currentChunkSize = chunkSize;
+
   console.log(
-    `[MemoryLeak] Starting controlled memory leak (adding ~${LEAK_CHUNK_SIZE_MB}MB to heap every 5 seconds)`
+    `[MemoryLeak] Starting controlled memory leak (adding ~${chunkSize}MB to heap every 5 seconds)`
   );
 
   leakIntervalId = setInterval(() => {
     // Allocate heap memory using arrays of objects (not Buffers which go to external memory)
     // Each object with a string takes heap space
     const chunk = [];
-    const itemsPerChunk = LEAK_CHUNK_SIZE_MB * 1024; // ~1KB per item
+    const itemsPerChunk = currentChunkSize * 1024; // ~1KB per item
     for (let i = 0; i < itemsPerChunk; i++) {
       chunk.push({
         data: 'x'.repeat(1024), // 1KB string per object
@@ -95,11 +99,15 @@ export function startMemoryLeak() {
     }
     leakedMemory.push(chunk);
     console.log(
-      `[MemoryLeak] Added chunk ${leakedMemory.length}, total leaked: ~${leakedMemory.length * LEAK_CHUNK_SIZE_MB}MB`
+      `[MemoryLeak] Added chunk ${leakedMemory.length}, total leaked: ~${leakedMemory.length * currentChunkSize}MB`
     );
   }, 5000);
 
-  return { status: 'started', message: 'Memory leak started' };
+  return {
+    status: 'started',
+    message: `Memory leak started with ${chunkSize}MB chunks`,
+    chunkSize,
+  };
 }
 
 export function stopMemoryLeak() {
@@ -110,20 +118,22 @@ export function stopMemoryLeak() {
 
   clearInterval(leakIntervalId);
   leakIntervalId = null;
+  const totalMB = leakedMemory.length * currentChunkSize;
   console.log(
-    `[MemoryLeak] Stopped memory leak. ${leakedMemory.length} chunks retained (~${leakedMemory.length * LEAK_CHUNK_SIZE_MB}MB)`
+    `[MemoryLeak] Stopped memory leak. ${leakedMemory.length} chunks retained (~${totalMB}MB)`
   );
 
   return {
     status: 'stopped',
     message: 'Memory leak stopped',
     retainedChunks: leakedMemory.length,
+    totalMB,
   };
 }
 
 export function cleanupMemoryLeak() {
   const chunksCleared = leakedMemory.length;
-  const mbCleared = chunksCleared * LEAK_CHUNK_SIZE_MB;
+  const mbCleared = chunksCleared * currentChunkSize;
 
   // Stop leak if running
   if (leakIntervalId !== null) {

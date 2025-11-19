@@ -1,13 +1,12 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useLoggedUser } from 'meteor/quave:logged-user-react';
 import { RoutePaths } from '../general/RoutePaths';
 import { useSubscribe, useFind } from 'meteor/react-meteor-data';
 import { ClicksCollection } from '../clicks/ClicksCollection';
 import { useAlert } from 'meteor/quave:alert-react-tailwind';
 import { Button } from '../components/Button';
-import { ServerStatus } from '../components/ServerStatus';
 
 export function Home() {
   const { openAlert } = useAlert();
@@ -119,8 +118,13 @@ export function Home() {
           >
             quave.dev
           </a>
-          <div className="mt-4 flex justify-center">
-            <ServerStatus />
+          <div className="mt-4">
+            <Link
+              to={RoutePaths.STATUS}
+              className="text-base font-medium text-indigo-700 hover:text-indigo-500"
+            >
+              Server Status &rarr;
+            </Link>
           </div>
         </div>
       </footer>

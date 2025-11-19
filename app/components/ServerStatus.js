@@ -4,6 +4,26 @@ import { Meteor } from 'meteor/meteor';
 
 const CHECK_INTERVAL_MS = 30000;
 
+// Cookie names for settings
+const COOKIE_AUTO_CLEANUP = '__zcloud_auto_cleanup';
+const COOKIE_CHUNK_SIZE = '__zcloud_chunk_size';
+const COOKIE_HEALTH_THRESHOLD = '__zcloud_health_threshold';
+
+// Default values
+const DEFAULT_AUTO_CLEANUP = false;
+const DEFAULT_CHUNK_SIZE = 50;
+const DEFAULT_HEALTH_THRESHOLD = 50;
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+  return match ? match[2] : null;
+}
+
+function setCookie(name, value, days = 365) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+}
+
 function formatBytes(bytes) {
   if (bytes === 0) return '0 B';
   const k = 1024;
@@ -18,6 +38,40 @@ function formatTime(isoString) {
   return date.toLocaleTimeString();
 }
 
+function loadSettingsFromCookies() {
+  const autoCleanupCookie = getCookie(COOKIE_AUTO_CLEANUP);
+  const chunkSizeCookie = getCookie(COOKIE_CHUNK_SIZE);
+  const healthThresholdCookie = getCookie(COOKIE_HEALTH_THRESHOLD);
+
+  const autoCleanup =
+    autoCleanupCookie !== null
+      ? autoCleanupCookie === 'true'
+      : DEFAULT_AUTO_CLEANUP;
+
+  const chunkSize =
+    chunkSizeCookie !== null
+      ? parseInt(chunkSizeCookie, 10)
+      : DEFAULT_CHUNK_SIZE;
+
+  const healthThreshold =
+    healthThresholdCookie !== null
+      ? parseInt(healthThresholdCookie, 10)
+      : DEFAULT_HEALTH_THRESHOLD;
+
+  // Initialize cookies if they don't exist
+  if (autoCleanupCookie === null) {
+    setCookie(COOKIE_AUTO_CLEANUP, DEFAULT_AUTO_CLEANUP.toString());
+  }
+  if (chunkSizeCookie === null) {
+    setCookie(COOKIE_CHUNK_SIZE, DEFAULT_CHUNK_SIZE.toString());
+  }
+  if (healthThresholdCookie === null) {
+    setCookie(COOKIE_HEALTH_THRESHOLD, DEFAULT_HEALTH_THRESHOLD.toString());
+  }
+
+  return { autoCleanup, chunkSize, healthThreshold };
+}
+
 export function ServerStatus() {
   const [serverInfo, setServerInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +80,6 @@ export function ServerStatus() {
   const [previousStickyCookie, setPreviousStickyCookie] = useState(null);
   const [currentHostname, setCurrentHostname] = useState(null);
   const [previousHostname, setPreviousHostname] = useState(null);
-  const [autoCleanup, setAutoCleanup] = useState(true);
   const [lastReconnectionStatus, setLastReconnectionStatus] = useState(null);
   const [lastCheckedAt, setLastCheckedAt] = useState(null);
   const [isClearing, setIsClearing] = useState(false);
@@ -35,6 +88,20 @@ export function ServerStatus() {
     leakedChunks: 0,
   });
   const [isLeakActionPending, setIsLeakActionPending] = useState(false);
+
+  // Settings loaded from cookies
+  const [autoCleanup, setAutoCleanup] = useState(() => {
+    const settings = loadSettingsFromCookies();
+    return settings.autoCleanup;
+  });
+  const [chunkSize, setChunkSize] = useState(() => {
+    const settings = loadSettingsFromCookies();
+    return settings.chunkSize;
+  });
+  const [healthThreshold, setHealthThreshold] = useState(() => {
+    const settings = loadSettingsFromCookies();
+    return settings.healthThreshold;
+  });
 
   const fetchServerStatus = useCallback(async () => {
     try {
@@ -54,14 +121,27 @@ export function ServerStatus() {
   const clearStickySession = useCallback(async () => {
     try {
       setIsClearing(true);
-      console.log('[StickySession] Calling server to clear sticky session');
+      console.log('=== [StickySession] CLEAR COOKIE REQUEST ===');
+      console.log('[StickySession] Sending POST to /api/clear-sticky-session');
+      console.log('[StickySession] Timestamp:', new Date().toISOString());
 
       const response = await fetch('/api/clear-sticky-session', {
         method: 'POST',
       });
       const data = await response.json();
 
-      console.log('[StickySession] Clear response:', data);
+      console.log('[StickySession] Server response received:');
+      console.log('[StickySession] Status:', data.status);
+      console.log('[StickySession] Message:', data.message);
+      console.log(
+        '[StickySession] Previous sticky session (saved):',
+        data.previousStickySession
+      );
+      console.log(
+        '[StickySession] Current sticky session (cleared):',
+        data.stickySession
+      );
+      console.log('=== [StickySession] CLEAR COOKIE COMPLETE ===');
 
       setStickyCookie(data.stickySession);
       setPreviousStickyCookie(data.previousStickySession);
@@ -74,7 +154,9 @@ export function ServerStatus() {
 
   const checkReconnection = useCallback(async () => {
     try {
-      const response = await fetch('/api/check-reconnection');
+      const response = await fetch(
+        `/api/check-reconnection?threshold=${healthThreshold}`
+      );
       const data = await response.json();
 
       console.log('[StickySession] Check reconnection response:', data);
@@ -88,7 +170,26 @@ export function ServerStatus() {
       setLastCheckedAt(data.checkedAt);
 
       if (data.needsReconnection) {
-        console.log('[StickySession] Server needs reconnection');
+        console.log('=== [StickySession] RECONNECTION NEEDED ===');
+        console.log('[StickySession] Server hostname:', data.hostname);
+        console.log(
+          '[StickySession] Heap usage:',
+          `${data.memory.heapUsagePercentage}%`
+        );
+        console.log('[StickySession] Threshold:', `${healthThreshold}%`);
+        console.log(
+          '[StickySession] Current sticky session:',
+          data.stickySession
+        );
+        console.log(
+          '[StickySession] Previous sticky session:',
+          data.previousStickySession
+        );
+        console.log('[StickySession] Memory details:', {
+          heapUsed: data.memory.heapUsed,
+          heapSizeLimit: data.memory.heapSizeLimit,
+          rss: data.memory.rss,
+        });
 
         setServerInfo((prev) => ({
           ...prev,
@@ -98,18 +199,28 @@ export function ServerStatus() {
 
         // Auto cleanup if enabled
         if (autoCleanup) {
-          console.log('[StickySession] Auto cleanup enabled, clearing cookie');
+          console.log(
+            '[StickySession] Auto cleanup ENABLED - triggering cookie clear'
+          );
+          console.log(
+            '[StickySession] Clearing __zcloud_sticky_sess cookie...'
+          );
           await clearStickySession();
+          console.log('[StickySession] Cookie clear request sent to server');
         } else {
           console.log(
-            '[StickySession] Manual cleanup mode, waiting for user action'
+            '[StickySession] Auto cleanup DISABLED - waiting for manual action'
+          );
+          console.log(
+            '[StickySession] User must click "Clear Sticky Session" button'
           );
         }
+        console.log('=== [StickySession] RECONNECTION CHECK COMPLETE ===');
       }
     } catch (err) {
       console.error('[StickySession] Error checking reconnection:', err);
     }
-  }, [autoCleanup, clearStickySession]);
+  }, [autoCleanup, clearStickySession, healthThreshold]);
 
   useEffect(() => {
     fetchServerStatus();
@@ -126,11 +237,30 @@ export function ServerStatus() {
   const handleToggleAutoCleanup = useCallback(() => {
     setAutoCleanup((prev) => {
       const newValue = !prev;
+      setCookie(COOKIE_AUTO_CLEANUP, newValue.toString());
       console.log(
         `[StickySession] Auto cleanup ${newValue ? 'enabled' : 'disabled'}`
       );
       return newValue;
     });
+  }, []);
+
+  const handleChunkSizeChange = useCallback((e) => {
+    const value = parseInt(e.target.value, 10);
+    if (value > 0 && value <= 500) {
+      setChunkSize(value);
+      setCookie(COOKIE_CHUNK_SIZE, value.toString());
+      console.log(`[MemoryLeak] Chunk size changed to ${value}MB`);
+    }
+  }, []);
+
+  const handleHealthThresholdChange = useCallback((e) => {
+    const value = parseInt(e.target.value, 10);
+    if (value > 0 && value <= 100) {
+      setHealthThreshold(value);
+      setCookie(COOKIE_HEALTH_THRESHOLD, value.toString());
+      console.log(`[Health] Threshold changed to ${value}%`);
+    }
   }, []);
 
   const handleManualClear = useCallback(async () => {
@@ -141,10 +271,15 @@ export function ServerStatus() {
   const handleStartLeak = useCallback(async () => {
     try {
       setIsLeakActionPending(true);
-      console.log('[MemoryLeak] Starting memory leak');
-      const response = await fetch('/api/memory-leak/start', {
-        method: 'POST',
-      });
+      console.log(
+        `[MemoryLeak] Starting memory leak with ${chunkSize}MB chunks`
+      );
+      const response = await fetch(
+        `/api/memory-leak/start?chunkSize=${chunkSize}`,
+        {
+          method: 'POST',
+        }
+      );
       const data = await response.json();
       console.log('[MemoryLeak] Start response:', data);
       await fetchServerStatus();
@@ -153,7 +288,7 @@ export function ServerStatus() {
     } finally {
       setIsLeakActionPending(false);
     }
-  }, [fetchServerStatus]);
+  }, [fetchServerStatus, chunkSize]);
 
   const handleStopLeak = useCallback(async () => {
     try {
@@ -252,6 +387,34 @@ export function ServerStatus() {
         </div>
       )}
 
+      {/* Settings */}
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+        <label className="flex items-center gap-1">
+          <span className="text-gray-400">Threshold:</span>
+          <input
+            type="number"
+            value={healthThreshold}
+            onChange={handleHealthThresholdChange}
+            min="1"
+            max="100"
+            className="w-12 rounded border border-gray-600 bg-gray-800 px-1 text-center text-white"
+          />
+          <span className="text-gray-400">%</span>
+        </label>
+        <label className="flex items-center gap-1">
+          <span className="text-gray-400">Chunk:</span>
+          <input
+            type="number"
+            value={chunkSize}
+            onChange={handleChunkSizeChange}
+            min="1"
+            max="500"
+            className="w-12 rounded border border-gray-600 bg-gray-800 px-1 text-center text-white"
+          />
+          <span className="text-gray-400">MB</span>
+        </label>
+      </div>
+
       {/* Memory Leak Status */}
       <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
         <span>
@@ -266,9 +429,8 @@ export function ServerStatus() {
           <>
             <span className="text-gray-400">|</span>
             <span>
-              <span className="text-gray-400">Leaked:</span> ~
-              {leakStatus.leakedChunks * 50}MB ({leakStatus.leakedChunks}{' '}
-              chunks)
+              <span className="text-gray-400">Leaked:</span>{' '}
+              {leakStatus.leakedChunks} chunks
             </span>
           </>
         )}

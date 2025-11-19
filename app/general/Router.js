@@ -6,6 +6,7 @@ import { Home } from '../home/Home';
 import { Access } from '../access/Access';
 import { NotFound } from './NotFound';
 import { Private } from '../private/Private';
+import { Status } from '../status/Status';
 import { PublicLayout } from '../layouts/PublicLayout';
 import { AnonymousLayout } from '../layouts/AnonymousLayout';
 import { LoggedLayout } from '../layouts/LoggedLayout';
@@ -35,6 +36,14 @@ export function Router() {
           <LoggedLayout>
             <Private />
           </LoggedLayout>
+        }
+      />
+      <Route
+        path={RoutePaths.STATUS}
+        element={
+          <PublicLayout>
+            <Status />
+          </PublicLayout>
         }
       />
       <Route
