@@ -91,24 +91,78 @@ WebApp.handlers.get('/api', (req, res) => {
   res.status(200).send(JSON.stringify({ status: 'success' }));
 });
 
+const STICKY_SESSION_COOKIE = '__zcloud_sticky_sess';
+const STICKY_SESSION_PREVIOUS_COOKIE = '__zcloud_sticky_sess_previous';
+const HOSTNAME_COOKIE = '__zcloud_current_hostname';
+const HOSTNAME_PREVIOUS_COOKIE = '__zcloud_previous_hostname';
+
+function parseCookies(cookieHeader) {
+  const cookies = {};
+  if (!cookieHeader) return cookies;
+
+  cookieHeader.split(';').forEach((cookie) => {
+    const [name, ...rest] = cookie.split('=');
+    const value = rest.join('=').trim();
+    if (name) {
+      cookies[name.trim()] = value;
+    }
+  });
+
+  return cookies;
+}
+
 WebApp.handlers.get('/api/check-reconnection', (req, res) => {
   res.set('Content-type', 'application/json');
 
   const health = getServerHealth();
+  const cookies = parseCookies(req.headers.cookie);
+  const stickySession = cookies[STICKY_SESSION_COOKIE] || null;
+  const previousStickySession = cookies[STICKY_SESSION_PREVIOUS_COOKIE] || null;
+  const currentHostname = cookies[HOSTNAME_COOKIE] || null;
+  const previousHostname = cookies[HOSTNAME_PREVIOUS_COOKIE] || null;
+
+  // Update hostname cookies if hostname changed
+  if (currentHostname !== health.hostname) {
+    if (currentHostname) {
+      // Save current hostname as previous
+      res.cookie(HOSTNAME_PREVIOUS_COOKIE, currentHostname, {
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+      console.log(
+        `[Health] Hostname changed from ${currentHostname} to ${health.hostname}`
+      );
+    }
+    // Set new current hostname
+    res.cookie(HOSTNAME_COOKIE, health.hostname, {
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+  }
+
+  const baseResponse = {
+    hostname: health.hostname,
+    memory: health.memory,
+    stickySession,
+    previousStickySession,
+    currentHostname: health.hostname,
+    previousHostname:
+      currentHostname !== health.hostname ? currentHostname : previousHostname,
+    checkedAt: new Date().toISOString(),
+  };
 
   if (health.needsReconnection) {
     console.log(
-      `[Health] Server ${health.hostname} is overloaded (${health.memory.heapUsagePercentage}% heap usage). Signaling client to clear sticky session.`
+      `[Health] Server ${health.hostname} is overloaded (${health.memory.heapUsagePercentage}% heap usage). Client should clear sticky session.`
     );
 
     res.status(200).send(
       JSON.stringify({
+        ...baseResponse,
         status: 'overloaded',
         needsReconnection: true,
-        hostname: health.hostname,
-        memory: health.memory,
         message:
-          'Server is overloaded. Client should clear sticky session for load redistribution.',
+          'Server is overloaded. Clear sticky session for load redistribution.',
       })
     );
     return;
@@ -116,10 +170,51 @@ WebApp.handlers.get('/api/check-reconnection', (req, res) => {
 
   res.status(200).send(
     JSON.stringify({
+      ...baseResponse,
       status: 'healthy',
       needsReconnection: false,
-      hostname: health.hostname,
-      memory: health.memory,
     })
   );
+});
+
+WebApp.handlers.post('/api/clear-sticky-session', (req, res) => {
+  res.set('Content-type', 'application/json');
+
+  const cookies = parseCookies(req.headers.cookie);
+  const currentStickySession = cookies[STICKY_SESSION_COOKIE] || null;
+
+  if (currentStickySession) {
+    console.log(
+      `[Health] Clearing sticky session cookie. Previous value: ${currentStickySession}`
+    );
+
+    // Set previous cookie with the current value
+    res.cookie(STICKY_SESSION_PREVIOUS_COOKIE, currentStickySession, {
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // Clear the current sticky session cookie
+    res.clearCookie(STICKY_SESSION_COOKIE, { path: '/' });
+
+    res.status(200).send(
+      JSON.stringify({
+        status: 'success',
+        message: 'Sticky session cookie cleared',
+        previousStickySession: currentStickySession,
+        stickySession: null,
+      })
+    );
+  } else {
+    console.log('[Health] No sticky session cookie to clear');
+
+    res.status(200).send(
+      JSON.stringify({
+        status: 'success',
+        message: 'No sticky session cookie to clear',
+        previousStickySession: cookies[STICKY_SESSION_PREVIOUS_COOKIE] || null,
+        stickySession: null,
+      })
+    );
+  }
 });

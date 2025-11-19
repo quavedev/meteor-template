@@ -3,22 +3,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Meteor } from 'meteor/meteor';
 
 const CHECK_INTERVAL_MS = 30000;
-const STICKY_SESSION_COOKIE = '__zcloud_sticky_sess';
-const STICKY_SESSION_PREVIOUS_COOKIE = '__zcloud_sticky_sess_previous';
-
-function getCookie(name) {
-  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-  return match ? match[2] : null;
-}
-
-function setCookie(name, value, days = 7) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${name}=${value}; expires=${expires}; path=/`;
-}
-
-function deleteCookie(name) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
-}
 
 function formatBytes(bytes) {
   if (bytes === 0) return '0 B';
@@ -28,42 +12,24 @@ function formatBytes(bytes) {
   return `${parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`;
 }
 
+function formatTime(isoString) {
+  if (!isoString) return 'never';
+  const date = new Date(isoString);
+  return date.toLocaleTimeString();
+}
+
 export function ServerStatus() {
   const [serverInfo, setServerInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [stickyCookie, setStickyCookie] = useState(null);
   const [previousStickyCookie, setPreviousStickyCookie] = useState(null);
-
-  const updateCookieState = useCallback(() => {
-    const current = getCookie(STICKY_SESSION_COOKIE);
-    const previous = getCookie(STICKY_SESSION_PREVIOUS_COOKIE);
-    setStickyCookie(current);
-    setPreviousStickyCookie(previous);
-    console.log('[StickySession] Current cookie:', current);
-    console.log('[StickySession] Previous cookie:', previous);
-  }, []);
-
-  const clearStickySessionCookie = useCallback(() => {
-    const currentValue = getCookie(STICKY_SESSION_COOKIE);
-
-    if (currentValue) {
-      console.log(
-        '[StickySession] Saving current cookie to previous:',
-        currentValue
-      );
-      setCookie(STICKY_SESSION_PREVIOUS_COOKIE, currentValue);
-
-      console.log(
-        '[StickySession] Clearing sticky session cookie due to server overload'
-      );
-      deleteCookie(STICKY_SESSION_COOKIE);
-
-      updateCookieState();
-    } else {
-      console.log('[StickySession] No sticky session cookie to clear');
-    }
-  }, [updateCookieState]);
+  const [currentHostname, setCurrentHostname] = useState(null);
+  const [previousHostname, setPreviousHostname] = useState(null);
+  const [autoCleanup, setAutoCleanup] = useState(true);
+  const [lastReconnectionStatus, setLastReconnectionStatus] = useState(null);
+  const [lastCheckedAt, setLastCheckedAt] = useState(null);
+  const [isClearing, setIsClearing] = useState(false);
 
   const fetchServerStatus = useCallback(async () => {
     try {
@@ -77,6 +43,27 @@ export function ServerStatus() {
     }
   }, []);
 
+  const clearStickySession = useCallback(async () => {
+    try {
+      setIsClearing(true);
+      console.log('[StickySession] Calling server to clear sticky session');
+
+      const response = await fetch('/api/clear-sticky-session', {
+        method: 'POST',
+      });
+      const data = await response.json();
+
+      console.log('[StickySession] Clear response:', data);
+
+      setStickyCookie(data.stickySession);
+      setPreviousStickyCookie(data.previousStickySession);
+    } catch (err) {
+      console.error('[StickySession] Error clearing sticky session:', err);
+    } finally {
+      setIsClearing(false);
+    }
+  }, []);
+
   const checkReconnection = useCallback(async () => {
     try {
       const response = await fetch('/api/check-reconnection');
@@ -84,28 +71,41 @@ export function ServerStatus() {
 
       console.log('[StickySession] Check reconnection response:', data);
 
+      // Update cookie state from server response
+      setStickyCookie(data.stickySession);
+      setPreviousStickyCookie(data.previousStickySession);
+      setCurrentHostname(data.currentHostname);
+      setPreviousHostname(data.previousHostname);
+      setLastReconnectionStatus(data.needsReconnection);
+      setLastCheckedAt(data.checkedAt);
+
       if (data.needsReconnection) {
-        console.log(
-          '[StickySession] Server needs reconnection, clearing sticky session'
-        );
-        clearStickySessionCookie();
+        console.log('[StickySession] Server needs reconnection');
 
         setServerInfo((prev) => ({
           ...prev,
           status: 'overloaded',
           hostname: data.hostname,
         }));
-      } else {
-        updateCookieState();
+
+        // Auto cleanup if enabled
+        if (autoCleanup) {
+          console.log('[StickySession] Auto cleanup enabled, clearing cookie');
+          await clearStickySession();
+        } else {
+          console.log(
+            '[StickySession] Manual cleanup mode, waiting for user action'
+          );
+        }
       }
     } catch (err) {
       console.error('[StickySession] Error checking reconnection:', err);
     }
-  }, [clearStickySessionCookie, updateCookieState]);
+  }, [autoCleanup, clearStickySession]);
 
   useEffect(() => {
-    updateCookieState();
     fetchServerStatus();
+    checkReconnection();
 
     const intervalId = setInterval(() => {
       checkReconnection();
@@ -113,7 +113,22 @@ export function ServerStatus() {
     }, CHECK_INTERVAL_MS);
 
     return () => clearInterval(intervalId);
-  }, [fetchServerStatus, checkReconnection, updateCookieState]);
+  }, [fetchServerStatus, checkReconnection]);
+
+  const handleToggleAutoCleanup = useCallback(() => {
+    setAutoCleanup((prev) => {
+      const newValue = !prev;
+      console.log(
+        `[StickySession] Auto cleanup ${newValue ? 'enabled' : 'disabled'}`
+      );
+      return newValue;
+    });
+  }, []);
+
+  const handleManualClear = useCallback(async () => {
+    console.log('[StickySession] Manual clear requested');
+    await clearStickySession();
+  }, [clearStickySession]);
 
   if (isLoading) {
     return <div className="text-xs text-gray-400">Loading server info...</div>;
@@ -149,6 +164,8 @@ export function ServerStatus() {
         <span className="text-gray-400">|</span>
         <span>System: {formatBytes(memory.totalSystem)}</span>
       </div>
+
+      {/* Sticky Session Info */}
       <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
         <span>
           <span className="text-gray-400">Sticky Session:</span>{' '}
@@ -162,6 +179,68 @@ export function ServerStatus() {
               {previousStickyCookie}
             </span>
           </>
+        )}
+      </div>
+
+      {/* Hostname Tracking */}
+      {previousHostname && (
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+          <span>
+            <span className="text-gray-400">Current Host:</span>{' '}
+            {currentHostname || 'unknown'}
+          </span>
+          <span className="text-gray-400">|</span>
+          <span>
+            <span className="text-gray-400">Previous Host:</span>{' '}
+            {previousHostname}
+          </span>
+        </div>
+      )}
+
+      {/* Last Reconnection Status */}
+      <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+        <span>
+          <span className="text-gray-400">Last Check:</span>{' '}
+          {formatTime(lastCheckedAt)}
+        </span>
+        <span className="text-gray-400">|</span>
+        <span>
+          <span className="text-gray-400">Needs Reconnection:</span>{' '}
+          <span
+            className={
+              lastReconnectionStatus ? 'text-red-500' : 'text-green-500'
+            }
+          >
+            {lastReconnectionStatus === null
+              ? 'unknown'
+              : lastReconnectionStatus
+                ? 'yes'
+                : 'no'}
+          </span>
+        </span>
+      </div>
+
+      {/* Controls */}
+      <div className="mt-2 flex items-center gap-3">
+        <label className="flex cursor-pointer items-center gap-1">
+          <input
+            type="checkbox"
+            checked={autoCleanup}
+            onChange={handleToggleAutoCleanup}
+            className="h-3 w-3"
+          />
+          <span className="text-gray-400">Auto cleanup</span>
+        </label>
+
+        {!autoCleanup && stickyCookie && (
+          <button
+            type="button"
+            onClick={handleManualClear}
+            disabled={isClearing}
+            className="rounded bg-red-600 px-2 py-0.5 text-white hover:bg-red-700 disabled:opacity-50"
+          >
+            {isClearing ? 'Clearing...' : 'Clear Sticky Session'}
+          </button>
         )}
       </div>
     </div>
