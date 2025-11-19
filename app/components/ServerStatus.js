@@ -187,6 +187,12 @@ export function ServerStatus() {
     }
   }, [fetchServerStatus]);
 
+  const handleCheckNow = useCallback(async () => {
+    console.log('[StickySession] Manual check requested');
+    await checkReconnection();
+    await fetchServerStatus();
+  }, [checkReconnection, fetchServerStatus]);
+
   if (isLoading) {
     return <div className="text-xs text-gray-400">Loading server info...</div>;
   }
@@ -334,6 +340,13 @@ export function ServerStatus() {
           <span className="text-gray-400">Last Check:</span>{' '}
           {formatTime(lastCheckedAt)}
         </span>
+        <button
+          type="button"
+          onClick={handleCheckNow}
+          className="rounded bg-blue-600 px-1.5 py-0.5 text-white hover:bg-blue-700"
+        >
+          Check Now
+        </button>
         <span className="text-gray-400">|</span>
         <span>
           <span className="text-gray-400">Needs Reconnection:</span>{' '}
