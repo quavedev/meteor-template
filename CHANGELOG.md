@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.10 (2026-07-21)
+
+- Upgrades Meteor to 3.5.
+- Updates Meteor package selections for Meteor 3.5.
+- Updates Rspack-related npm dependencies required by the latest Meteor release.
+- Updates Docker base images to Meteor 3.5.
+- Adds the Meteor/Rspack Docker build polling workaround for Parcel watcher EINTR hangs.
+- Adds `.dockerignore` to keep local Docker build contexts clean.
+- Updates documentation to reference Meteor 3.5 and Node.js 24.15+.
+
 ## 0.0.9 (2025-11-19)
 
 - Adds Rspack bundler support with React Compiler integration

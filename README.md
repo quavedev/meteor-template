@@ -10,7 +10,7 @@ This template demonstrates how Quave builds Meteor applications. It includes a c
 
 ## Tech Stack
 
-- **Framework**: Meteor 3.3
+- **Framework**: Meteor 3.5
 - **Frontend**: React 19 with React Compiler
 - **Styling**: Tailwind CSS 4
 - **Database**: MongoDB
@@ -118,8 +118,8 @@ server/
 ## Getting Started
 
 ### Prerequisites
-- Node.js 20+
-- Meteor 3.3+
+- Node.js 24.15+
+- Meteor 3.5+
 
 ### Installation
 
@@ -188,7 +188,7 @@ Always run `npm run quave-check` before committing. The template uses:
 
 ### Docker
 
-The template includes a Dockerfile configured for Meteor 3.3. Build and deploy to any container platform.
+The template includes a Dockerfile configured for Meteor 3.5. Build and deploy to any container platform.
 
 ### zCloud
 

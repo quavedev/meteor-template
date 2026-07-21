@@ -27,12 +27,13 @@
     }
   },
   "devDependencies": {
-    "@meteorjs/rspack": "^1.0.0",
+    "@meteorjs/rspack": "^2.0.1",
     "@quave/eslint-config-quave": "^3.0.0",
-    "@rsdoctor/rspack-plugin": "^1.2.3",
+    "@rsdoctor/rspack-plugin": "^1.5.7",
     "@rspack/cli": "^1.7.1",
     "@rspack/core": "^1.7.1",
     "@rspack/plugin-react-refresh": "^1.4.3",
+    "@swc/core": "^1.15.46",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/meteor": "^2.9.9",
     "babel-plugin-react-compiler": "^19.1.0-rc.2",
