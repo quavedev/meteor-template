@@ -1,4 +1,4 @@
-/* eslint-disable import/no-default-export */
+/* oxlint-disable import/no-default-export */
 export default {
   plugins: {
     "@tailwindcss/postcss": {},

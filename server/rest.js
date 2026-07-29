@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 import { registerMetrics } from './metrics';
 import { WebApp } from 'meteor/webapp';
 import { ClicksCollection } from '../app/clicks/ClicksCollection';
@@ -73,7 +73,7 @@ WebApp.handlers.get('/api/load-data', async (req, res) => {
   const loopSize = Array.from(Array(+num).keys());
   console.log('loopSize', loopSize);
 
-  // eslint-disable-next-line no-restricted-syntax
+  // oxlint-disable-next-line no-restricted-syntax
   for await (const i of loopSize) {
     await ClicksCollection.upsertAsync({}, { $inc: { count: 1 } });
     clicks = (await ClicksCollection.findOneAsync()) || { counts: 0 };

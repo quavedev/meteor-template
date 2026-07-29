@@ -9,7 +9,7 @@ Migrations.add({
   version: 1,
   name: 'Not really migrating anything',
   up() {
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console
     console.log("I'm a fake migration");
   },
 });

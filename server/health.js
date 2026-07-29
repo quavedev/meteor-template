@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 import os from 'os';
 import v8 from 'v8';
 

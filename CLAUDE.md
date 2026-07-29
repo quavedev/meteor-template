@@ -10,7 +10,7 @@ A modern Meteor 3 application template with React 19, Tailwind CSS 4, and MongoD
 - **Database**: MongoDB
 - **Schema**: SimpleSchema
 - **Build Tools**: Babel, PostCSS
-- **Code Quality**: ESLint (@quave/eslint-config-quave), Prettier, Lefthook
+- **Code Quality**: Oxlint, Oxfmt, Lefthook
 
 ## Universal Code Standards
 
@@ -29,8 +29,8 @@ A modern Meteor 3 application template with React 19, Tailwind CSS 4, and MongoD
 
 ### Quality Gates
 **CRITICAL**: Before finishing any task, ALWAYS run:
-1. `npm run quave-check` (ESLint + Prettier)  
-2. Fix any ESLint errors or warnings
+1. `npm run quave-check` (Oxlint + Oxfmt)
+2. Fix any Oxlint errors or warnings
 3. Only mark tasks complete after passing lint checks
 
 ### Security & Performance

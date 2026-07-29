@@ -15,7 +15,7 @@ This template demonstrates how Quave builds Meteor applications. It includes a c
 - **Styling**: Tailwind CSS 4
 - **Database**: MongoDB
 - **Bundler**: Rspack (optional, for faster builds)
-- **Code Quality**: ESLint, Prettier, Lefthook
+- **Code Quality**: Oxlint, Oxfmt, Lefthook
 
 ## Features
 
@@ -55,8 +55,8 @@ This template demonstrates how Quave builds Meteor applications. It includes a c
 ### Development Tools
 - **Rspack**: Fast bundler with React Compiler support
 - **Claude Code**: AI-assisted development with specialized agents
-- **ESLint**: Code linting with @quave/eslint-config-quave
-- **Prettier**: Code formatting
+- **Oxlint**: Fast code linting
+- **Oxfmt**: Fast code formatting
 - **Lefthook**: Git hooks
 
 ### Server Features
@@ -158,20 +158,22 @@ Fill in `private/env/dev/settings.json` with your app configuration:
 # Start development server
 meteor npm start
 
-# Run code quality checks (ESLint + Prettier)
+# Run code quality checks (Oxlint + Oxfmt)
 meteor npm run quave-check
 
 # Individual tools
-meteor npm run quave-eslint
-meteor npm run quave-prettier
+meteor npm run quave-lint
+meteor npm run quave-format
+
+# CI-style checks without modifying files
+meteor npm run quave-check-ci
 ```
 
 ### Code Quality
 
 Always run `npm run quave-check` before committing. The template uses:
-- ESLint with @quave/eslint-config-quave
-- Prettier for formatting
-- React Compiler lint rules
+- Oxlint for linting
+- Oxfmt for formatting
 - Lefthook for pre-commit hooks
 
 ### API Endpoints

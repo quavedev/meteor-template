@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 import React, { useState, useEffect, useCallback } from 'react';
 import { Meteor } from 'meteor/meteor';
 
