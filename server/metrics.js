@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 import { collectDefaultMetrics, register } from 'prom-client';
 import { WebApp } from 'meteor/webapp';
 

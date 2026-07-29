@@ -2,7 +2,7 @@ import React from 'react';
 
 export function Loading({ name }) {
   if (name) {
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console
     console.log('Loading', name);
   }
 

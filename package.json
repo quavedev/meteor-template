@@ -3,10 +3,13 @@
   "private": true,
   "scripts": {
     "start": "meteor --settings private/env/dev/settings.json",
-    "quave-eslint": "eslint . --fix",
-    "quave-prettier": "prettier --write \"**/*.js\"",
-    "quave-check": "npm run quave-eslint && npm run quave-prettier",
-    "test": "exit 0"
+    "quave-check": "npm run quave-lint && npm run quave-format",
+    "test": "exit 0",
+    "quave-lint": "oxlint -c .oxlintrc.jsonc --fix --quiet .",
+    "quave-format": "oxfmt \"**/*.js\"",
+    "quave-lint:check": "oxlint -c .oxlintrc.jsonc --quiet .",
+    "quave-format:check": "oxfmt --check \"**/*.js\"",
+    "quave-check-ci": "npm run quave-lint:check && npm run quave-format:check"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.2",
@@ -28,7 +31,6 @@
   },
   "devDependencies": {
     "@meteorjs/rspack": "^2.0.1",
-    "@quave/eslint-config-quave": "^3.0.0",
     "@rsdoctor/rspack-plugin": "^1.5.7",
     "@rspack/cli": "^1.7.1",
     "@rspack/core": "^1.7.1",
@@ -37,27 +39,12 @@
     "@tailwindcss/postcss": "^4.1.11",
     "@types/meteor": "^2.9.9",
     "babel-plugin-react-compiler": "^19.1.0-rc.2",
-    "eslint-plugin-jest": "^29.0.1",
-    "eslint-plugin-react-compiler": "^19.1.0-rc.2",
     "lefthook": "^1.12.2",
     "postcss": "^8.5.6",
     "postcss-loader": "^8.2.0",
     "react-refresh": "^0.17.0",
-    "tailwindcss": "^4.1.11"
-  },
-  "eslintConfig": {
-    "extends": [
-      "@quave/quave"
-    ],
-    "plugins": [
-      "eslint-plugin-react-compiler"
-    ],
-    "rules": {
-      "react-compiler/react-compiler": "error",
-      "react/jsx-filename-extension": "off",
-      "no-await-in-loop": "off",
-      "no-console": "off",
-      "jsx-a11y/control-has-associated-label": "off"
-    }
+    "tailwindcss": "^4.1.11",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0"
   }
 }

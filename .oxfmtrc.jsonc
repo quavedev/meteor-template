@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 80,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "ignorePatterns": [
+    "node_modules",
+    ".meteor",
+    "_build",
+    "**/build-assets",
+    "**/build-chunks",
+    ".rsdoctor"
+  ]
+}
