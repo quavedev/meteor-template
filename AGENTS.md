@@ -33,9 +33,14 @@ changing application code.
    organized by feature or domain.
 2. Meteor 3 server code is async. Await server database reads and writes and use
    async Meteor APIs such as `Meteor.userAsync()`.
-3. Clients read through publications and Minimongo. Persistent mutations go
-   through validated, authorized server methods. Do not depend on client method
-   simulation for correctness.
+3. **Never share Mongo/Minimongo data-access code between client and server.** Server-only
+   publications read Mongo and publish data. Client-only code subscribes, then reads the
+   resulting Minimongo data with `find`/`findOne`. Persistent mutations go through
+   validated, authorized server-only methods. Shared modules may contain pure utilities,
+   schemas, constants, enums, and collection definitions, but never queries, writes,
+   publications, subscriptions, or method implementations. Do not use `Meteor.isClient`
+   / `Meteor.isServer` branches to make one data-access function run in both environments,
+   and do not depend on client method simulation for correctness.
 4. Create collections with `createCollection()` from
    `meteor/quave:collections`. Prefer the collection helpers and async write APIs
    already established by this repository.

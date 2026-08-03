@@ -288,6 +288,8 @@ Class-string handling:
 
 Client UI code reads reactively from the local **Minimongo** cache and writes through
 **Meteor methods**. Reads use the **sync** reactive APIs; mutations are async method calls.
+The corresponding Mongo query belongs in a server-only publication. Never extract a
+shared "data service" that runs the same collection query against Mongo and Minimongo.
 
 ```jsx
 import { useSubscribe, useFind } from 'meteor/react-meteor-data';
@@ -320,6 +322,9 @@ Rules:
   `useFind(() => Collection.find(...), deps)` for the cursor. `useFind` needs a **cursor**
   — never return `undefined` from the factory. Use `useTracker` for anything beyond a
   single cursor.
+- **Client data access stays client-only.** Subscription hooks and Minimongo finds must
+  not be imported by server code. Their matching Mongo selectors live separately in
+  server-only publications; do not share a query helper between the two environments.
 - **Mutations go through Meteor methods**, called with `Meteor.callAsync('name', args)`.
   Wrap in `try/catch` and route the error's `.reason` to `openAlert` (see
   [Alerts](#alerts-and-messages)).

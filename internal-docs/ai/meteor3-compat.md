@@ -16,9 +16,11 @@ Reference: https://v3-migration-docs.meteor.com/
 - **Client (browser) is sync-friendly.** React components under `app/` read from
   **Minimongo** with the sync cursor API (`find`, `findOne`, `fetch`) — that is expected,
   safe, and preferred so render paths and small handlers stay simple.
-- **No isomorphism.** Do not write code that depends on the same function running the same
-  way on client and server, and do not rely on Meteor's method *simulation* (the client
-  stub) for correctness. The client **calls** a method; the **server** validates and writes.
+- **No isomorphic data access.** Never share a function that queries or writes Mongo on
+  the server and Minimongo on the client. Server-only publications read Mongo; client-only
+  code subscribes and then reads Minimongo. Server-only methods own persistent mutations.
+  Do not use runtime branches to make one data-access module serve both environments, and
+  do not rely on Meteor's method *simulation* (the client stub) for correctness.
 - **All mutations go through Meteor methods on the server.** Never write to Minimongo
   directly from the client, and never add client-side `allow`/`deny` inserts. The only way
   data changes is: client `Meteor.callAsync('name', args)` → server `async` method →
@@ -32,10 +34,25 @@ Reference: https://v3-migration-docs.meteor.com/
 | React components under `app/` (e.g. `app/home/Home.js`) | browser | sync Minimongo OK; mutate via `Meteor.callAsync` |
 | `server/` | server only | `*Async` + `await` |
 | `app/**/*Methods.js`, `app/**/*Publishes.js` | server (source of truth) | `async` + `await` |
-| Collection defs (`app/**/*Collection.js`) | both bundles | reads on client may be sync; **server writes must be `*Async`** |
+| Collection defs (`app/**/*Collection.js`) | both bundles | declarative schema/helpers only; no queries or writes |
+| Pure utilities, schemas, constants, and enums | either or both | safe to share only when they do not access Mongo/Minimongo or Meteor data APIs |
 
-When a module can be reached from the server, treat it as server code: use `*Async` and
-`await`. When in doubt, use the async form.
+The code paths remain deliberately different even though both sides import the same
+collection definition:
+
+```text
+server publication -> Mongo query -> published documents
+client subscription -> Minimongo find/findOne -> reactive UI
+client callAsync -> server method -> validated/authorized Mongo write
+```
+
+Never place a `Collection.find*`, `insert*`, `update*`, `remove*`, `upsert*`, or `save*`
+call in a module imported by both client and server. Never put `Meteor.publish`,
+`Meteor.subscribe`, `useSubscribe`, or a method implementation in shared code.
+
+When a module can be reached from both bundles, remove all data access from it and move
+that logic to an explicitly client-only or server-only module. Do not solve ambiguous
+placement by choosing one API form for both environments.
 
 ---
 

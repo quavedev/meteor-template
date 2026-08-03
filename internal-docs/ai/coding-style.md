@@ -60,19 +60,29 @@ if (order.status === 'DISPATCHED') { /* ... */ }                 // ❌ loose st
 
 ---
 
-## 3. No isomorphism — keep client and server separate
+## 3. No isomorphic data access — keep client and server separate
 
-There is **no shared/isomorphic runtime** in this app. Client code lives under `client/`
-and the client-facing domain folders; server code lives under `server/` and server-only
-files. Do not write a module intended to run on both. A single collection *definition*
-(`createCollection`) is used from both sides, but all imperative logic is either
-client-only or server-only — decide which and put it there.
+**Never write one data-access function or module that runs against Mongo on the server
+and Minimongo on the client.** The similar collection APIs are not permission to share
+query or mutation logic across environments. Do not hide the distinction behind
+`Meteor.isClient`, `Meteor.isServer`, environment checks, or a wrapper that selects sync
+versus async collection calls.
 
-- **Client** reads data via publications + synchronous Minimongo (`find`, `findOne`,
-  `fetch` are fine and preferred in React for simple component code).
-- **Client never writes to Minimongo directly** and has **no client-side simulation
-  stubs.** Every mutation is a server Meteor method call.
-- **Server is async-only** (see below).
+- **Server-only publications** authorize and read Mongo, then publish the permitted data.
+- **Client-only UI/hooks** subscribe to those publications, then read the resulting local
+  Minimongo data synchronously with `find`, `findOne`, or `fetch`.
+- **Server-only methods** validate and authorize every persistent mutation, then read or
+  write Mongo with awaited async APIs. The client only calls those methods.
+- **Client code never writes to Minimongo directly** and has no client-side simulation
+  stubs that mutate data.
+- Shared modules may contain **pure utilities**, constants, schemas, enums, pure domain
+  calculations, and the declarative collection definition required by both
+  bundles. They must not contain collection queries or writes, publication/subscription
+  logic, method implementations, or any other Mongo/Minimongo access.
+
+This means sharing a pure function such as `calculateTotal({ items })` is correct. Sharing
+`findOrders({ userId })`, where the same function queries Mongo or Minimongo depending on
+the runtime, is forbidden.
 
 ---
 
