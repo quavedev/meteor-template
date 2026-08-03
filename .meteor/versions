@@ -50,8 +50,8 @@ mongo@2.4.0
 mongo-decimal@0.2.0
 mongo-dev-server@1.1.1
 mongo-id@1.0.9
-montiapm:agent@3.0.0-beta.16
-montiapm:meteorx@2.3.1
+montiapm:agent@3.0.0-beta.19
+montiapm:meteorx@2.3.3
 npm-mongo@6.16.1
 ordered-dict@1.2.0
 promise@1.0.0
@@ -63,7 +63,7 @@ quave:logged-user-react@2.0.1-beta300.7
 quave:migrations@2.0.2
 quave:react-meteor-data@3.0.0-beta300.7
 quave:settings@1.1.0
-quave:synced-cron@2.3.0
+quave:synced-cron@2.4.0
 random@1.2.2
 rate-limit@1.2.0
 react-fast-refresh@0.3.0

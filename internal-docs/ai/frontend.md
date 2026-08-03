@@ -292,7 +292,7 @@ The corresponding Mongo query belongs in a server-only publication. Never extrac
 shared "data service" that runs the same collection query against Mongo and Minimongo.
 
 ```jsx
-import { useSubscribe, useFind } from 'meteor/react-meteor-data';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
 import { useLoggedUser } from 'meteor/quave:logged-user-react';
 import { useAlert } from 'meteor/quave:alert-react-tailwind';
 import { ClicksCollection } from '../clicks/ClicksCollection';
@@ -302,7 +302,10 @@ export function Home() {
   const { loggedUser, isLoadingLoggedUser } = useLoggedUser();
 
   const isLoading = useSubscribe('countData');           // subscribe to a publication
-  const clicks = useFind(() => ClicksCollection.find(), []); // reactive sync read
+  const clicks = useTracker(
+    () => ClicksCollection.find().fetch(),
+    []
+  ); // reactive sync Minimongo read
 
   const onIncrement = async () => {
     try {
@@ -318,10 +321,11 @@ export function Home() {
 
 Rules:
 
-- **Reads are reactive + sync:** `useSubscribe(name, ...args)` for the subscription,
-  `useFind(() => Collection.find(...), deps)` for the cursor. `useFind` needs a **cursor**
-  — never return `undefined` from the factory. Use `useTracker` for anything beyond a
-  single cursor.
+- **Reads are reactive + sync:** `useSubscribe(name, ...args)` for the subscription and
+  `useTracker(() => Collection.find(...).fetch(), deps)` for reactive Minimongo data.
+  Keep the query client-only. Use `useFind(() => Collection.find(...), deps)` only when
+  its incremental cursor-observer behavior has been verified with the repository's
+  current React and `react-meteor-data` versions.
 - **Client data access stays client-only.** Subscription hooks and Minimongo finds must
   not be imported by server code. Their matching Mongo selectors live separately in
   server-only publications; do not share a query helper between the two environments.

@@ -220,20 +220,23 @@ Meteor.methods({
 
 ## Publications, subscriptions, and reactive client reads
 
-React reads Minimongo **synchronously** and mutates by **calling the method**. It never
-touches Minimongo write APIs directly.
+React reads Minimongo **synchronously and reactively** and mutates by **calling the
+method**. It never touches Minimongo write APIs directly.
 
 ```javascript
 // app/home/Home.js  (browser)
 import { Meteor } from 'meteor/meteor';
-import { useSubscribe, useFind } from 'meteor/react-meteor-data';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
 import { ClicksCollection } from '../clicks/ClicksCollection';
 
 export function Home() {
   useSubscribe('countData');
 
   // ✅ sync Minimongo read — no await in render
-  const documents = useFind(() => ClicksCollection.find(), []);
+  const documents = useTracker(
+    () => ClicksCollection.find().fetch(),
+    []
+  );
   const clickDocument = documents[0];
 
   const onCount = async () => {

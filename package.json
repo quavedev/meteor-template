@@ -12,15 +12,15 @@
     "quave-check-ci": "npm run quave-lint:check && npm run quave-format:check"
   },
   "dependencies": {
-    "@babel/runtime": "^7.28.2",
-    "@swc/helpers": "^0.5.17",
-    "meteor-node-stubs": "^1.2.22",
+    "@babel/runtime": "^8.0.0",
+    "@swc/helpers": "^0.5.23",
+    "meteor-node-stubs": "^1.2.27",
     "prom-client": "^15.1.3",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-error-boundary": "^4.1.2",
-    "react-router-dom": "^6.30.1",
-    "simpl-schema": "^3.4.6"
+    "react-error-boundary": "^6.1.2",
+    "react-router-dom": "^6.30.4",
+    "simpl-schema": "^3.4.7"
   },
   "meteor": {
     "modern": true,
@@ -31,20 +31,20 @@
   },
   "devDependencies": {
     "@meteorjs/rspack": "^2.0.1",
-    "@rsdoctor/rspack-plugin": "^1.5.7",
-    "@rspack/cli": "^1.7.1",
-    "@rspack/core": "^1.7.1",
-    "@rspack/plugin-react-refresh": "^1.4.3",
-    "@swc/core": "^1.15.46",
+    "@rsdoctor/rspack-plugin": "^1.6.1",
+    "@rspack/cli": "^1.7.12",
+    "@rspack/core": "^1.7.12",
+    "@rspack/plugin-react-refresh": "^1.6.2",
+    "@swc/core": "^1.15.47",
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/meteor": "^2.9.9",
+    "@types/meteor": "^2.9.11",
     "babel-plugin-react-compiler": "^1.0.0",
-    "lefthook": "^1.12.2",
-    "oxfmt": "^0.61.0",
-    "oxlint": "^1.76.0",
-    "postcss": "^8.5.6",
-    "postcss-loader": "^8.2.0",
-    "react-refresh": "^0.17.0",
+    "lefthook": "^2.1.10",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "postcss": "^8.5.25",
+    "postcss-loader": "^8.2.1",
+    "react-refresh": "^0.18.0",
     "tailwindcss": "^4.3.3"
   }
 }
