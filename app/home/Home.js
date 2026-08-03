@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLoggedUser } from 'meteor/quave:logged-user-react';
 import { RoutePaths } from '../general/RoutePaths';
-import { useSubscribe, useFind } from 'meteor/react-meteor-data';
+import { useSubscribe, useTracker } from 'meteor/react-meteor-data';
 import { ClicksCollection } from '../clicks/ClicksCollection';
 import { useAlert } from 'meteor/quave:alert-react-tailwind';
 import { Button } from '../components/Button';
@@ -15,7 +15,7 @@ export function Home() {
 
   useSubscribe('countData');
 
-  const documents = useFind(() => ClicksCollection.find(), []);
+  const documents = useTracker(() => ClicksCollection.find().fetch(), []);
 
   const onCount = async () => {
     try {

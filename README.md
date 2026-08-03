@@ -54,7 +54,7 @@ This template demonstrates how Quave builds Meteor applications. It includes a c
 
 ### Development Tools
 - **Rspack**: Fast bundler with React Compiler support
-- **Claude Code**: AI-assisted development with specialized agents
+- **AI guidance**: tool-agnostic `AGENTS.md` with focused Meteor, data, frontend, and workflow references
 - **Oxlint**: Fast code linting
 - **Oxfmt**: Fast code formatting
 - **Lefthook**: Git hooks
@@ -110,9 +110,10 @@ server/
 ├── rest.js           # REST API endpoints
 └── main.js           # Server entry point
 
-.claude/
-├── agents/           # Specialized AI agents
-└── settings.json     # Claude Code configuration
+AGENTS.md             # Canonical instructions for AI coding tools
+CLAUDE.md             # Claude Code compatibility shim
+COLLECTIONS.md        # Human-readable MongoDB schema inventory
+internal-docs/ai/     # Detailed, topic-specific engineering guidance
 ```
 
 ## Getting Started
@@ -171,7 +172,8 @@ meteor npm run quave-check-ci
 
 ### Code Quality
 
-Always run `npm run quave-check` before committing. The template uses:
+Always run `meteor npm run quave-check-ci` before committing. Use
+`meteor npm run quave-check` when you want automatic fixes. The template uses:
 - Oxlint for linting
 - Oxfmt for formatting
 - Lefthook for pre-commit hooks
