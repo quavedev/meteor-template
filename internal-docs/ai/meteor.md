@@ -1,15 +1,19 @@
-# Meteor 3 async/compat conventions
+# Meteor conventions
 
-This repo runs **Meteor 3.5**. On the **server** only Meteor 3 **async** APIs exist.
-The sync Mongo collection methods and sync Meteor server APIs from the Meteor 2 era
-are **removed / invalid on the server** — do not use them, and do not reintroduce them
-when pasting old snippets.
+This is the canonical guide for Meteor architecture in applications generated from this
+template. It covers client/server runtime boundaries, Mongo and Minimongo, collections,
+publications and subscriptions, methods, reactive client reads, server APIs, and module
+loading.
 
-Reference: https://v3-migration-docs.meteor.com/
+The template runs **Meteor 3.5**, so server code uses async APIs. Avoiding removed Meteor
+2 APIs is an important compatibility requirement, but it is only one part of the broader
+architecture documented here.
+
+Meteor 3 migration reference: https://v3-migration-docs.meteor.com/
 
 ---
 
-## The one-paragraph model
+## Architecture at a glance
 
 - **Server is async-only.** Every DB read/write and every `Meteor` server API uses the
   `*Async` variant with `await`. Every Meteor method is declared `async`.
@@ -56,7 +60,7 @@ placement by choosing one API form for both environments.
 
 ---
 
-## Server-side MongoDB — ALWAYS use `*Async`
+## Server-side MongoDB
 
 ```javascript
 // ❌ BANNED — removed from the server in Meteor 3
@@ -176,7 +180,7 @@ const doc = await MyCollection.saveAsync({ name: 'foo' });
 
 ---
 
-## Meteor methods — ALWAYS `async`, mutations only here
+## Meteor methods
 
 Every method is `async`. The method is the **only** place a mutation happens: validate,
 then write with `*Async`.
@@ -214,7 +218,7 @@ Meteor.methods({
 
 ---
 
-## Client → server: `useFind` to read, `callAsync` to mutate
+## Publications, subscriptions, and reactive client reads
 
 React reads Minimongo **synchronously** and mutates by **calling the method**. It never
 touches Minimongo write APIs directly.
@@ -294,7 +298,7 @@ Meteor.publish('countData', async function () {
 
 ---
 
-## Removed APIs — never introduce
+## Meteor 2 migration guard: removed APIs
 
 Meteor 3 has no Fibers. These are gone:
 
@@ -333,7 +337,7 @@ const x = require('./x');
 
 ---
 
-## Banned → use quick reference (server)
+## Server API quick reference
 
 | Banned sync on server | Required (Meteor 3 async) |
 |---|---|

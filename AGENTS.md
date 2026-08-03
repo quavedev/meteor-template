@@ -26,8 +26,8 @@ meteor npm run quave-check-ci
 ## Core rules
 
 Read [`internal-docs/ai/coding-style.md`](internal-docs/ai/coding-style.md) and
-[`internal-docs/ai/meteor3-compat.md`](internal-docs/ai/meteor3-compat.md) before
-changing application code.
+[`internal-docs/ai/meteor.md`](internal-docs/ai/meteor.md) before changing application
+code.
 
 1. Use JavaScript, ESM, named functions, and named-parameter objects. Keep code
    organized by feature or domain.
