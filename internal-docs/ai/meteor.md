@@ -185,6 +185,19 @@ const doc = await MyCollection.saveAsync({ name: 'foo' });
 Every method is `async`. The method is the **only** place a mutation happens: validate,
 then write with `*Async`.
 
+### Default DDP unblocking
+
+The server-only `quave:unblock` package wraps `Meteor.methods` and `Meteor.publish`, so
+every application handler calls `this.unblock()` before its own code runs. Keep the
+package after authentication packages in `.meteor/packages`, and do not repeat
+`this.unblock()` inside ordinary methods or publications.
+
+Unblocked handlers from one connection may overlap, so each handler must authorize its
+own work and must not depend on another handler finishing first. Direct assignments to
+`Meteor.server.method_handlers` bypass the package and must call `this.unblock()` first.
+Meteor forbids `this.setUserId()` after unblocking; connection-authentication handlers
+that call it must load before `quave:unblock` or bypass the patched registration.
+
 ```javascript
 // app/clicks/clicksMethods.js  (server source of truth)
 import { Meteor } from 'meteor/meteor';

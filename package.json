@@ -4,7 +4,7 @@
   "scripts": {
     "start": "meteor --settings private/env/dev/settings.json",
     "quave-check": "npm run quave-lint && npm run quave-format",
-    "test": "exit 0",
+    "test": "node --test tests/*.test.mjs",
     "quave-lint": "oxlint -c .oxlintrc.jsonc --fix --quiet .",
     "quave-format": "oxfmt \"**/*.js\"",
     "quave-lint:check": "oxlint -c .oxlintrc.jsonc --quiet .",
