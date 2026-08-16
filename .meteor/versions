@@ -64,6 +64,7 @@ quave:migrations@2.0.2
 quave:react-meteor-data@3.0.0-beta300.7
 quave:settings@1.1.0
 quave:synced-cron@2.4.0
+quave:unblock@1.0.0
 random@1.2.2
 rate-limit@1.2.0
 react-fast-refresh@0.3.0

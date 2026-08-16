@@ -51,6 +51,11 @@ code.
    module format required by their tool.
 7. Do not add commented-out code, dead imports, credentials, tokens, personal
    data, or environment-specific secrets.
+8. `quave:unblock` automatically unblocks every application method and publication.
+   Keep it after authentication packages in `.meteor/packages`; do not add redundant
+   `this.unblock()` calls. Direct `Meteor.server.method_handlers` overrides bypass the
+   package and must unblock themselves. A handler that calls `this.setUserId()` must
+   not be registered through the package-patched `Meteor.methods`.
 
 ## Frontend
 

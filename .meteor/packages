@@ -31,3 +31,4 @@ zodern:types
 
 rspack@1.2.0
 montiapm:agent@3.0.0-beta.19
+quave:unblock@1.0.0
